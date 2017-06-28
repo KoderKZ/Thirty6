@@ -69,7 +69,7 @@ extension GameScene {
         default:
             break
         }
-        
+
         for var i in 1..<5{
             if i != moveNodeIndex{
                 var node:SKNode = SKNode()
@@ -79,7 +79,7 @@ extension GameScene {
                     if node.alpha != 0{
                         operation1 = 0
                     }
-                case 2:
+                case 2:3
                     node = secondNumberNode
                     if node.alpha != 0{
                         operation2 = 0
