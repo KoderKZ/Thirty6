@@ -9,8 +9,12 @@
 /* Begin PBXBuildFile section */
 		0A01B4231EFCB77F001E175C /* EndGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A01B4221EFCB77E001E175C /* EndGame.swift */; };
 		0A01B4251EFEFBB5001E175C /* timeburnerbold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A01B4241EFEFBB5001E175C /* timeburnerbold.ttf */; };
+		0A1A91D11F0426680024DF6B /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1A91CD1F0426680024DF6B /* add.png */; };
+		0A1A91D21F0426680024DF6B /* divide.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1A91CE1F0426680024DF6B /* divide.png */; };
+		0A1A91D41F0426680024DF6B /* subtract.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1A91D01F0426680024DF6B /* subtract.png */; };
 		0A292D701EF5FF4A00CFCB44 /* undoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A292D6F1EF5FF4A00CFCB44 /* undoButton.png */; };
 		0A292D721EF8974900CFCB44 /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A292D711EF8974900CFCB44 /* GameLogic.swift */; };
+		0AB5CDB01F042C5B008383C3 /* multiply.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AB5CDAF1F042C5B008383C3 /* multiply.png */; };
 		0AD694681E8DE46A001FEE38 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD694671E8DE46A001FEE38 /* AppDelegate.swift */; };
 		0AD6946A1E8DE46A001FEE38 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0AD694691E8DE46A001FEE38 /* GameScene.sks */; };
 		0AD6946C1E8DE46A001FEE38 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0AD6946B1E8DE46A001FEE38 /* Actions.sks */; };
@@ -47,8 +51,12 @@
 /* Begin PBXFileReference section */
 		0A01B4221EFCB77E001E175C /* EndGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndGame.swift; sourceTree = "<group>"; };
 		0A01B4241EFEFBB5001E175C /* timeburnerbold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = timeburnerbold.ttf; sourceTree = "<group>"; };
+		0A1A91CD1F0426680024DF6B /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
+		0A1A91CE1F0426680024DF6B /* divide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = divide.png; sourceTree = "<group>"; };
+		0A1A91D01F0426680024DF6B /* subtract.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subtract.png; sourceTree = "<group>"; };
 		0A292D6F1EF5FF4A00CFCB44 /* undoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undoButton.png; sourceTree = "<group>"; };
 		0A292D711EF8974900CFCB44 /* GameLogic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameLogic.swift; sourceTree = "<group>"; };
+		0AB5CDAF1F042C5B008383C3 /* multiply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = multiply.png; sourceTree = "<group>"; };
 		0AD694641E8DE46A001FEE38 /* Thirty6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thirty6.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AD694671E8DE46A001FEE38 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0AD694691E8DE46A001FEE38 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -128,6 +136,10 @@
 				0AD6949D1E8DE4ED001FEE38 /* GameElements.swift */,
 				0A292D711EF8974900CFCB44 /* GameLogic.swift */,
 				0A01B4221EFCB77E001E175C /* EndGame.swift */,
+				0A1A91CD1F0426680024DF6B /* add.png */,
+				0A1A91CE1F0426680024DF6B /* divide.png */,
+				0AB5CDAF1F042C5B008383C3 /* multiply.png */,
+				0A1A91D01F0426680024DF6B /* subtract.png */,
 				0AD9F9F21EFF05060023ACA9 /* backButton.png */,
 				0A292D6F1EF5FF4A00CFCB44 /* undoButton.png */,
 				0AD9F9F01EFF018C0023ACA9 /* timeburnernormal.ttf */,
@@ -271,8 +283,12 @@
 				0AD694731E8DE46A001FEE38 /* Main.storyboard in Resources */,
 				0AD6946A1E8DE46A001FEE38 /* GameScene.sks in Resources */,
 				0A292D701EF5FF4A00CFCB44 /* undoButton.png in Resources */,
+				0A1A91D41F0426680024DF6B /* subtract.png in Resources */,
+				0A1A91D11F0426680024DF6B /* add.png in Resources */,
+				0A1A91D21F0426680024DF6B /* divide.png in Resources */,
 				0AD694751E8DE46A001FEE38 /* Assets.xcassets in Resources */,
 				0AD9F9F31EFF05060023ACA9 /* backButton.png in Resources */,
+				0AB5CDB01F042C5B008383C3 /* multiply.png in Resources */,
 				0A01B4251EFEFBB5001E175C /* timeburnerbold.ttf in Resources */,
 				0AD694781E8DE46A001FEE38 /* LaunchScreen.storyboard in Resources */,
 				0AD9F9F11EFF018C0023ACA9 /* timeburnernormal.ttf in Resources */,

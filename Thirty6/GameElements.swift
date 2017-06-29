@@ -19,10 +19,15 @@ extension GameScene {
     }
     
     func setUpLabelPosArray(){
-        labelPos.add(CGPoint(x: -self.frame.size.width/4, y: self.frame.size.height/4))
-        labelPos.add(CGPoint(x: self.frame.size.width/4, y: self.frame.size.height/4))
-        labelPos.add(CGPoint(x: -self.frame.size.width/4, y: -self.frame.size.height/4))
-        labelPos.add(CGPoint(x: self.frame.size.width/4, y: -self.frame.size.height/4))
+        labelPos.add(CGPoint(x: -self.frame.size.width/8*3, y: -self.frame.size.height/4))
+        labelPos.add(CGPoint(x: -self.frame.size.width/8, y: -self.frame.size.height/4))
+        labelPos.add(CGPoint(x: self.frame.size.width/8, y: -self.frame.size.height/4))
+        labelPos.add(CGPoint(x: self.frame.size.width/8*3, y: -self.frame.size.height/4))
+        
+        operationPos.add(CGPoint(x: self.frame.size.width/8, y: self.frame.size.height/2))
+        operationPos.add(CGPoint(x: self.frame.size.width/8*3, y: self.frame.size.height/2))
+        operationPos.add(CGPoint(x: self.frame.size.width/8*5, y: self.frame.size.height/2))
+        operationPos.add(CGPoint(x: self.frame.size.width/8*7, y: self.frame.size.height/2))
         
         labelPos2.add(CGPoint(x: 0, y: self.frame.size.height/4))
         labelPos2.add(CGPoint(x: self.frame.size.width/4, y: 0))
@@ -30,95 +35,95 @@ extension GameScene {
         labelPos2.add(CGPoint(x: -self.frame.size.width/4, y: 0))
     }
     
-    func operationSwitch() {
-        let operationLabel:SKLabelNode
-        
-        switch moveNodeIndex {
-        case 1:
-            operationLabel = firstNumberNode.children[1] as! SKLabelNode
-            if operation1 == 4{
-                operation1 = 0
-            }else{
-                operation1! += 1
-            }
-            animateOperation(node: operationLabel, operation: operation1)
-        case 2:
-            operationLabel = secondNumberNode.children[1] as! SKLabelNode
-            if operation2 == 4{
-                operation2 = 0
-            }else{
-                operation2! += 1
-            }
-            animateOperation(node: operationLabel, operation: operation2)
-        case 3:
-            operationLabel = thirdNumberNode.children[1] as! SKLabelNode
-            if operation3 == 4{
-                operation3 = 0
-            }else{
-                operation3! += 1
-            }
-            animateOperation(node: operationLabel, operation: operation3)
-        case 4:
-            operationLabel = fourthNumberNode.children[1] as! SKLabelNode
-            if operation4 == 4{
-                operation4 = 0
-            }else{
-                operation4! += 1
-            }
-            animateOperation(node: operationLabel, operation: operation4)
-        default:
-            break
-        }
-
-        for var i in 1..<5{
-            if i != moveNodeIndex{
-                var node:SKNode = SKNode()
-                switch i {
-                case 1:
-                    node = firstNumberNode
-                    if node.alpha != 0{
-                        operation1 = 0
-                    }
-                case 2:3
-                    node = secondNumberNode
-                    if node.alpha != 0{
-                        operation2 = 0
-                    }
-                case 3:
-                    node = thirdNumberNode
-                    if node.alpha != 0{
-                        operation3 = 0
-                    }
-                case 4:
-                    node = fourthNumberNode
-                    if node.alpha != 0{
-                        operation4 = 0
-                    }
-                default:
-                    break
-                }
-                if node.alpha != 0{
-                    let nodeOperation = node.children[1] as! SKLabelNode
-                    animateOperation(node: nodeOperation, operation: 0)
-                }
-            }
-        }
-    }
+//    func operationSwitch() {
+//        let operationLabel:SKLabelNode
+//        
+//        switch moveNodeIndex {
+//        case 1:
+//            operationLabel = firstNumberNode.children[1] as! SKLabelNode
+//            if operation1 == 4{
+//                operation1 = 0
+//            }else{
+//                operation1! += 1
+//            }
+//            animateOperation(node: operationLabel, operation: operation1)
+//        case 2:
+//            operationLabel = secondNumberNode.children[1] as! SKLabelNode
+//            if operation2 == 4{
+//                operation2 = 0
+//            }else{
+//                operation2! += 1
+//            }
+//            animateOperation(node: operationLabel, operation: operation2)
+//        case 3:
+//            operationLabel = thirdNumberNode.children[1] as! SKLabelNode
+//            if operation3 == 4{
+//                operation3 = 0
+//            }else{
+//                operation3! += 1
+//            }
+//            animateOperation(node: operationLabel, operation: operation3)
+//        case 4:
+//            operationLabel = fourthNumberNode.children[1] as! SKLabelNode
+//            if operation4 == 4{
+//                operation4 = 0
+//            }else{
+//                operation4! += 1
+//            }
+//            animateOperation(node: operationLabel, operation: operation4)
+//        default:
+//            break
+//        }
+//
+//        for var i in 1..<5{
+//            if i != moveNodeIndex{
+//                var node:SKNode = SKNode()
+//                switch i {
+//                case 1:
+//                    node = firstNumberNode
+//                    if node.alpha != 0{
+//                        operation1 = 0
+//                    }
+//                case 2:3
+//                    node = secondNumberNode
+//                    if node.alpha != 0{
+//                        operation2 = 0
+//                    }
+//                case 3:
+//                    node = thirdNumberNode
+//                    if node.alpha != 0{
+//                        operation3 = 0
+//                    }
+//                case 4:
+//                    node = fourthNumberNode
+//                    if node.alpha != 0{
+//                        operation4 = 0
+//                    }
+//                default:
+//                    break
+//                }
+//                if node.alpha != 0{
+//                    let nodeOperation = node.children[1] as! SKLabelNode
+//                    animateOperation(node: nodeOperation, operation: 0)
+//                }
+//            }
+//        }
+//    }
     
-    func animateOperation(node:SKLabelNode, operation:Int) {
-        let operationArray = NSMutableArray(objects: "", "+", "-", "*", "/")
-
-        let moveMargin1 = firstNumberLabel.frame.size.height
-        node.run(SKAction.moveBy(x: 0, y: -moveMargin1, duration: 0.1))
-        node.run(SKAction.fadeOut(withDuration: 0.1))
-        delay(0.2){
-            node.text = operationArray[operation] as? String
-            node.position.y = node.position.y+moveMargin1*2
-            node.run(SKAction.fadeIn(withDuration: 0.1))
-            node.run(SKAction.moveBy(x: 0, y: -moveMargin1, duration: 0.1))
-        }
-    }
-    
+//    func animateOperation(node:SKLabelNode, operation:Int) {
+//        let operationArray = NSMutableArray(objects: "", "+", "-", "*", "/")
+//
+//        let moveMargin1 = firstNumberLabel.frame.size.height
+//        node.run(SKAction.moveBy(x: 0, y: -moveMargin1, duration: 0.1))
+//        node.run(SKAction.fadeOut(withDuration: 0.1))
+//        delay(0.2){
+//            node.text = operationArray[operation] as? String
+//            node.position.y = node.position.y+moveMargin1*2
+//            node.run(SKAction.fadeIn(withDuration: 0.1))
+//            node.run(SKAction.moveBy(x: 0, y: -moveMargin1, duration: 0.1))
+//        }
+//    }
+//    
     func setUpErrorOverlay() {
         errorOverlay = SKNode()
         errorOverlay.position = CGPoint(x: 0, y: 0)
@@ -226,7 +231,7 @@ extension GameScene {
         ThirtysixLabel.fontSize = 75
         ThirtysixLabel.fontName = "TimeBurner-Bold"
         ThirtysixLabel.fontColor = .black
-        ThirtysixLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        ThirtysixLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/4*3)
         ThirtysixLabel.horizontalAlignmentMode = .center
         ThirtysixLabel.verticalAlignmentMode = .center
         addChild(ThirtysixLabel)
@@ -251,6 +256,30 @@ extension GameScene {
         secondNumberLabel = secondNumberNode.children[0] as! SKLabelNode
         thirdNumberLabel = thirdNumberNode.children[0] as! SKLabelNode
         fourthNumberLabel = fourthNumberNode.children[0] as! SKLabelNode
+        //fix sizes
+        let width = firstNumberLabel.frame.size.width*0.75
+        
+        addSprite = SKSpriteNode(imageNamed: "add.png")
+        addSprite.position = operationPos.object(at: 0) as! CGPoint
+        addSprite.size = CGSize(width: width, height: width)
+        
+        subtractSprite = SKSpriteNode(imageNamed: "subtract.png")
+        subtractSprite.position = operationPos.object(at: 1) as! CGPoint
+        subtractSprite.size = CGSize(width: width, height: width/100*15)
+        
+        multiplySprite = SKSpriteNode(imageNamed: "multiply.png")
+        multiplySprite.position = operationPos.object(at: 2) as! CGPoint
+        multiplySprite.size = CGSize(width: width, height: width)
+        
+        divideSprite = SKSpriteNode(imageNamed: "divide.png")
+        divideSprite.position = operationPos.object(at: 3) as! CGPoint
+        divideSprite.size = CGSize(width: width, height: width)
+        
+        addChild(addSprite)
+        addChild(subtractSprite)
+        addChild(multiplySprite)
+        addChild(divideSprite)
+        
         
         backButton = SKSpriteNode(imageNamed: "backButton.png")
         backButton.size = CGSize(width: 10, height: 25)
@@ -264,6 +293,35 @@ extension GameScene {
         undoButton.position = CGPoint(x: undoButton.size.width*1.5, y: undoButton.size.height*1.5)
         addChild(undoButton)
         
+    }
+    
+    func switchNumbers() {
+        let node = self.children[moveNodeIndex] as! SKNode
+        var index = 0
+        switch node.position {
+        case labelPos.object(at: 0) as! CGPoint:
+            index = 0
+        case labelPos.object(at: 1) as! CGPoint:
+            index = 1
+        case labelPos.object(at: 2) as! CGPoint:
+            index = 2
+        case labelPos.object(at: 3) as! CGPoint:
+            index = 3
+        default:
+            break
+        }
+        var node2:SKNode = SKNode()
+        checkLoop: for var i in 1..<4{
+            if moveNodeIndex != i{
+                if self.children[i].position == labelPos.object(at: index) as! CGPoint{
+                    node2 = self.children[i]
+                    break checkLoop
+                }
+            }
+        }
+        let pos = node.position
+        node.run(SKAction.move(to: labelPos.object(at: index+1) as! CGPoint, duration: 0.5))
+        node2.run(SKAction.move(to: pos, duration: 0.5))
     }
     
     func undo() {
