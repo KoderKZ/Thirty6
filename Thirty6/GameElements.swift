@@ -295,33 +295,48 @@ extension GameScene {
         
     }
     
-    func switchNumbers() {
-        let node = self.children[moveNodeIndex] as! SKNode
-        var index = 0
-        switch node.position {
-        case labelPos.object(at: 0) as! CGPoint:
-            index = 0
-        case labelPos.object(at: 1) as! CGPoint:
-            index = 1
-        case labelPos.object(at: 2) as! CGPoint:
-            index = 2
-        case labelPos.object(at: 3) as! CGPoint:
-            index = 3
-        default:
-            break
-        }
-        var node2:SKNode = SKNode()
-        checkLoop: for var i in 1..<4{
-            if moveNodeIndex != i{
-                if self.children[i].position == labelPos.object(at: index) as! CGPoint{
-                    node2 = self.children[i]
-                    break checkLoop
+    func switchNumbers(right: Bool) {
+        if !switchingNumbers {
+            switchingNumbers = true
+            let node = self.children[moveNodeIndex] as! SKNode
+            var index = 0
+            var modifier = 0
+            if right{
+                modifier = 1
+            }else if !right{
+                modifier = -1
+            }
+            switch node.position {
+            case labelPos.object(at: 0) as! CGPoint:
+                index = 0+modifier
+            case labelPos.object(at: 1) as! CGPoint:
+                index = 1+modifier
+            case labelPos.object(at: 2) as! CGPoint:
+                index = 2+modifier
+            case labelPos.object(at: 3) as! CGPoint:
+                index = 3+modifier
+            default:
+                break
+            }
+            if index < 4 && index >= 0{
+                var node2:SKNode = SKNode()
+                checkLoop: for var i in 1..<5{
+                    if moveNodeIndex != i{
+                        if self.children[i].position == labelPos.object(at: index) as! CGPoint{
+                            node2 = self.children[i]
+                            break checkLoop
+                        }
+                    }
                 }
+                let pos = node.position
+                node.run(SKAction.move(to: labelPos.object(at: index) as! CGPoint, duration: 0.5))
+                node2.run(SKAction.move(to: pos, duration: 0.5))
+
+            }
+            delay(0.5){
+                self.switchingNumbers = false
             }
         }
-        let pos = node.position
-        node.run(SKAction.move(to: labelPos.object(at: index+1) as! CGPoint, duration: 0.5))
-        node2.run(SKAction.move(to: pos, duration: 0.5))
     }
     
     func undo() {
