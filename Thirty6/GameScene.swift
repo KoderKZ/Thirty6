@@ -124,16 +124,16 @@ class GameScene: SKScene {
         var touch = touches.first?.location(in: self)
 
         //if touchedNode != nil{
-        if gameLogic.checkIfNodeInTouch(node: addSprite, touch: touch!){
+        if gameLogic.checkIfNodeInTouch(node: addSprite, touch: touch!, multiplier: 2){
             moveOperationIndex = 1
             beginOperationPos = addSprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: subtractSprite, touch: touch!){
+        }else if gameLogic.checkIfNodeInTouch(node: subtractSprite, touch: touch!, multiplier: 2){
             moveOperationIndex = 2
             beginOperationPos = subtractSprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: multiplySprite, touch: touch!){
+        }else if gameLogic.checkIfNodeInTouch(node: multiplySprite, touch: touch!, multiplier: 2){
             moveOperationIndex = 3
             beginOperationPos = multiplySprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: divideSprite, touch: touch!){
+        }else if gameLogic.checkIfNodeInTouch(node: divideSprite, touch: touch!, multiplier: 2){
             moveOperationIndex = 4
             beginOperationPos = divideSprite.position
         }else{
@@ -255,7 +255,7 @@ class GameScene: SKScene {
         }
         var touch = touches.first?.location(in: self)
         
-        if moveOperationIndex != 0 {
+        if moveOperationIndex != 0 && !moveOperationBool{
             switch moveOperationIndex {
             case 1:
                 if addSprite.position == operationPos.object(at: 0) as! CGPoint{
@@ -279,11 +279,11 @@ class GameScene: SKScene {
             moveOperationBool = false
         }else{
             let touchedNode = self.atPoint(touch!)
-            if gameLogic.checkIfNodeInTouch(node: backButton, touch: touch!){
+            if gameLogic.checkIfNodeInTouch(node: backButton, touch: touch!, multiplier: 1.5){
                 let transition = SKTransition.flipVertical(withDuration: 0.5)
                 let titleScene = TitleScene(size: self.size)
                 self.view?.presentScene(titleScene, transition: transition)
-            }else if gameLogic.checkIfNodeInTouch(node: undoButton, touch: touch!){
+            }else if gameLogic.checkIfNodeInTouch(node: undoButton, touch: touch!, multiplier: 1.5){
                 if hiddenArray.count != 0{
                     undo()
                 }else{

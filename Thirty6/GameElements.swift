@@ -267,6 +267,99 @@ extension GameScene {
         }
     }
     
+    func operateNumbers(node: SKSpriteNode) {
+        let operationArray = getOperationPosArray()
+
+        var index = 0
+        for var i in 1..<operationArray.count+1{
+            if node.position == operationArray.object(at: i) as! CGPoint{
+                index = i
+            }
+        }
+        let numberPosArray = getNumberPosArray()
+        var node1 = SKNode()
+        var node2 = SKNode()
+        for var i in 1..<numberPosArray.count+1{
+            if self.children[i].position == numberPosArray.object(at: index-1) as! CGPoint{
+                node1 = self.children[i]
+            }else if self.children[i].position == numberPosArray.object(at: index+1) as! CGPoint{
+                node2 = self.children[i]
+            }
+        }
+
+        let labelNode1 = node1.children[0] as! SKLabelNode
+        let labelNode2 = node2.children[0] as! SKLabelNode
+        let number1 = Int(labelNode1.text!)!
+        let number2 = Int(labelNode2.text!)!
+        
+        var finalNumber = 0
+        switch node {
+        case addSprite:
+            finalNumber = number1+number2
+        case subtractSprite:
+            finalNumber = number1-number2
+        case multiplySprite:
+            finalNumber = number1*number2
+        case divideSprite:
+            finalNumber = number1/number2
+        default:
+            break
+        }
+        
+        let numberPos = CGPoint(x: node.position.x-self.frame.size.width/2, y: node.position.y-self.frame.size.height/2)
+        node1.run(SKAction.move(to: numberPos, duration: 0.5))
+        node2.run(SKAction.move(to: numberPos, duration: 0.5))
+        
+        node.run(SKAction.fadeOut(withDuration: 0.5))
+        node1.run(SKAction.fadeOut(withDuration: 0.5))
+        node2.run(SKAction.fadeOut(withDuration: 0.5))
+        
+        delay(0.5){
+            for var i in 0..<self.operationPos.count {
+                let operationNode = self.children[i+5] as! SKSpriteNode
+                operationNode.position = self.operationPos.object(at: i) as! CGPoint
+            }
+        }
+        node2.run(SKAction.fadeIn(withDuration: 0.25))
+        
+    }
+    func getNumberPosArray() -> NSMutableArray {
+        var array = NSMutableArray()
+        switch numberHidden {
+        case 0:
+            array = labelPos
+        case 1:
+            array = labelPos2
+        case 2:
+            array.add(labelPos.object(at: 1) as! CGPoint)
+            array.add(labelPos.object(at: 2) as! CGPoint)
+        default:
+            break
+        }
+        return array
+    }
+    
+    func getOperationPosArray() -> NSMutableArray {
+        var array = NSMutableArray()
+        if numberHidden == 0 {
+            array = labelPos2
+        }else if numberHidden == 1 {
+            array.add(labelPos.object(at: 1) as! CGPoint)
+            array.add(labelPos.object(at: 2) as! CGPoint)
+        }else if numberHidden == 2 {
+            array.add(labelPos2.object(at: 1) as! CGPoint)
+        }
+        for var i in 0..<array.count{
+            var point = array.object(at: i) as! CGPoint
+            if point.y < self.frame.size.height/4{
+                point.x += self.frame.size.width/2
+                point.y += self.frame.size.height/2
+                array.replaceObject(at: i, with: point)
+            }
+        }
+        return array
+    }
+    
     func moveOperation(right: Bool) {
         if !moveOperationBool {
             moveOperationBool = true
@@ -278,23 +371,7 @@ extension GameScene {
             }else if !right{
                 modifier = -1
             }
-            var array = NSMutableArray()
-            if numberHidden == 0 {
-                array = labelPos2
-            }else if numberHidden == 1 {
-                array.add(labelPos.object(at: 1) as! CGPoint)
-                array.add(labelPos.object(at: 2) as! CGPoint)
-            }else if numberHidden == 2 {
-                array.add(labelPos2.object(at: 1) as! CGPoint)
-            }
-            for var i in 0..<array.count{
-                var point = array.object(at: i) as! CGPoint
-                if point.y < self.frame.size.height/4{
-                    point.x += self.frame.size.width/2
-                    point.y += self.frame.size.height/2
-                    array.replaceObject(at: i, with: point)
-                }
-            }
+            let array = getOperationPosArray()
             for var i in 0..<array.count{
                 if node.position == array.object(at: i) as! CGPoint{
                     index = i+modifier
@@ -305,7 +382,7 @@ extension GameScene {
                 let pos = node.position
                 node.run(SKAction.move(to: array.object(at: index) as! CGPoint, duration: 0.5))
             }
-            delay(0.5){
+            delay(1){
                 self.moveOperationBool = false
             }
         }

@@ -94,11 +94,11 @@ class GameLogic {
         return numberArray
     }
     
-    func checkIfNodeInTouch(node: SKNode, touch: CGPoint) -> Bool {
-        if touch.x < node.position.x+node.frame.size.width*1.5 &&
-            touch.x > node.position.x-node.frame.size.width*1.5 &&
-            touch.y < node.position.y+node.frame.size.height*1.5 &&
-            touch.y > node.position.y-node.frame.size.height*1.5 {
+    func checkIfNodeInTouch(node: SKNode, touch: CGPoint, multiplier: CGFloat) -> Bool {
+        if touch.x < node.position.x+node.frame.size.width*multiplier &&
+            touch.x > node.position.x-node.frame.size.width*multiplier &&
+            touch.y < node.position.y+node.frame.size.height*multiplier &&
+            touch.y > node.position.y-node.frame.size.height*multiplier {
             
             return true
         }else{
