@@ -52,6 +52,7 @@ class GameScene: SKScene {
     var labelPos2:NSMutableArray!
     var operationPos:NSMutableArray!
     var beginNumberPos:CGPoint!
+    var beginOperationPos:CGPoint!
     var switchingNumbers:Bool!
     
     var hiddenArray:NSMutableArray!
@@ -92,6 +93,7 @@ class GameScene: SKScene {
         labelPos2 = NSMutableArray(capacity: 4)
         operationPos = NSMutableArray(capacity: 4)
         beginNumberPos = CGPoint(x: 0, y: 0)
+        beginOperationPos = CGPoint(x: 0, y: 0)
         
         hiddenArray = NSMutableArray(capacity: 4)
         setUpLabelPosArray()
@@ -124,12 +126,16 @@ class GameScene: SKScene {
         //if touchedNode != nil{
         if gameLogic.checkIfNodeInTouch(node: addSprite, touch: touch!){
             moveOperationIndex = 1
+            beginOperationPos = addSprite.position
         }else if gameLogic.checkIfNodeInTouch(node: subtractSprite, touch: touch!){
             moveOperationIndex = 2
+            beginOperationPos = subtractSprite.position
         }else if gameLogic.checkIfNodeInTouch(node: multiplySprite, touch: touch!){
             moveOperationIndex = 3
+            beginOperationPos = multiplySprite.position
         }else if gameLogic.checkIfNodeInTouch(node: divideSprite, touch: touch!){
             moveOperationIndex = 4
+            beginOperationPos = divideSprite.position
         }else{
             moveOperationIndex = 0
         }
@@ -194,17 +200,29 @@ class GameScene: SKScene {
 
         switch moveOperationIndex {
         case 1:
-            addSprite.position = touch!
-            moveOperationBool = true
+            if (touch?.x)! > beginOperationPos.x && (touch?.x)!-beginOperationPos.x > self.frame.size.width/7{
+                moveOperation(right: true)
+            }else if (touch?.x)! < beginOperationPos.x && beginOperationPos.x-(touch?.x)! > self.frame.size.width/7{
+                moveOperation(right: false)
+            }
         case 2:
-            subtractSprite.position = touch!
-            moveOperationBool = true
+            if (touch?.x)! > beginOperationPos.x && (touch?.x)!-beginOperationPos.x > self.frame.size.width/7{
+                moveOperation(right: true)
+            }else if (touch?.x)! < beginOperationPos.x && beginOperationPos.x-(touch?.x)! > self.frame.size.width/7{
+                moveOperation(right: false)
+            }
         case 3:
-            multiplySprite.position = touch!
-            moveOperationBool = true
+            if (touch?.x)! > beginOperationPos.x && (touch?.x)!-beginOperationPos.x > self.frame.size.width/7{
+                moveOperation(right: true)
+            }else if (touch?.x)! < beginOperationPos.x && beginOperationPos.x-(touch?.x)! > self.frame.size.width/7{
+                moveOperation(right: false)
+            }
         case 4:
-            divideSprite.position = touch!
-            moveOperationBool = true
+            if (touch?.x)! > beginOperationPos.x && (touch?.x)!-beginOperationPos.x > self.frame.size.width/7{
+                moveOperation(right: true)
+            }else if (touch?.x)! < beginOperationPos.x && beginOperationPos.x-(touch?.x)! > self.frame.size.width/7{
+                moveOperation(right: false)
+            }
         default:
             
             
@@ -237,16 +255,24 @@ class GameScene: SKScene {
         }
         var touch = touches.first?.location(in: self)
         
-        if moveOperationBool {
+        if moveOperationIndex != 0 {
             switch moveOperationIndex {
             case 1:
-                addSprite.position = operationPos.object(at: 0) as! CGPoint
+                if addSprite.position == operationPos.object(at: 0) as! CGPoint{
+                    firstOperationMove(node: addSprite)
+                }
             case 2:
-                subtractSprite.position = operationPos.object(at: 1) as! CGPoint
+                if subtractSprite.position == operationPos.object(at: 1) as! CGPoint{
+                    firstOperationMove(node: subtractSprite)
+                }
             case 3:
-                multiplySprite.position = operationPos.object(at: 2) as! CGPoint
+                if multiplySprite.position == operationPos.object(at: 2) as! CGPoint{
+                    firstOperationMove(node: multiplySprite)
+                }
             case 4:
-                divideSprite.position = operationPos.object(at: 3) as! CGPoint
+                if divideSprite.position == operationPos.object(at: 3) as! CGPoint{
+                    firstOperationMove(node: divideSprite)
+                }
             default:
                 break
             }

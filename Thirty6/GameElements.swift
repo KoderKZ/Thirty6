@@ -29,10 +29,9 @@ extension GameScene {
         operationPos.add(CGPoint(x: self.frame.size.width/8*5, y: self.frame.size.height/2))
         operationPos.add(CGPoint(x: self.frame.size.width/8*7, y: self.frame.size.height/2))
         
-        labelPos2.add(CGPoint(x: 0, y: self.frame.size.height/4))
-        labelPos2.add(CGPoint(x: self.frame.size.width/4, y: 0))
+        labelPos2.add(CGPoint(x: -self.frame.size.width/4, y: -self.frame.size.height/4))
         labelPos2.add(CGPoint(x: 0, y: -self.frame.size.height/4))
-        labelPos2.add(CGPoint(x: -self.frame.size.width/4, y: 0))
+        labelPos2.add(CGPoint(x: self.frame.size.width/4, y: -self.frame.size.height/4))
     }
     
 //    func operationSwitch() {
@@ -185,44 +184,6 @@ extension GameScene {
 
         
         
-        //CGPoint(x: self.frame.size.width/2-numLabelMargin-numAddMargin-10, y: self.frame.size.height/2)
-//        let numAdd = SKLabelNode(text: "+")
-//        numAdd.fontSize = 40
-//        numAdd.fontColor = .black
-//        numAdd.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2+numLabel.frame.size.height/2+numAdd.frame.size.height/2+operationMargin)
-//        numAdd.horizontalAlignmentMode = .center
-//        numAdd.verticalAlignmentMode = .center
-//        numLabelNode.addChild(numAdd)
-//        numAdd.alpha = 0
-//        
-//        let numSubtract = SKLabelNode(text: "-")
-//        numSubtract.fontSize = 40
-//        numSubtract.fontColor = .black
-//        numSubtract.position = CGPoint(x: self.frame.size.width/2-numLabel.frame.size.height/2-numAdd.frame.size.height/2-operationMargin, y: self.frame.size.height/2)
-//        numSubtract.horizontalAlignmentMode = .center
-//        numSubtract.verticalAlignmentMode = .center
-//        numLabelNode.addChild(numSubtract)
-//        numSubtract.alpha = 0
-//        
-//        let numMultiply = SKLabelNode(text: "*")
-//        numMultiply.fontSize = 40
-//        numMultiply.fontColor = .black
-//        numMultiply.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2-numLabel.frame.size.height/2-numAdd.frame.size.height/2-operationMargin)
-//        numMultiply.horizontalAlignmentMode = .center
-//        numMultiply.verticalAlignmentMode = .center
-//        numLabelNode.addChild(numMultiply)
-//        numMultiply.alpha = 0
-//        
-//        let numDivide = SKLabelNode(text: "/")
-//        numDivide.fontSize = 40
-//        numDivide.fontColor = .black
-//        numDivide.position = CGPoint(x: self.frame.size.width/2+numLabel.frame.size.height/2+numAdd.frame.size.height/2+operationMargin, y: self.frame.size.height/2)
-//        numDivide.horizontalAlignmentMode = .center
-//        numDivide.verticalAlignmentMode = .center
-//        numLabelNode.addChild(numDivide)
-//        numDivide.alpha = 0
-        
-        
         return numLabelNode
     }
     
@@ -293,6 +254,61 @@ extension GameScene {
         undoButton.position = CGPoint(x: undoButton.size.width*1.5, y: undoButton.size.height*1.5)
         addChild(undoButton)
         
+    }
+    
+    func firstOperationMove(node: SKNode) {
+        let point = CGPoint(x: ((firstNumberNode.position.x+self.frame.size.width/2)+(secondNumberNode.position.x+self.frame.size.width/2))/2, y: firstNumberNode.position.y+self.frame.size.height/2)
+        node.run(SKAction.move(to: point, duration: 0.5))
+        for var i in 0..<operationPos.count {
+            if i+1 != moveOperationIndex {
+                let node = self.children[i+5] as! SKSpriteNode
+                node.run(SKAction.move(to: operationPos.object(at: i) as! CGPoint, duration: 0.5))
+            }
+        }
+    }
+    
+    func moveOperation(right: Bool) {
+        if !moveOperationBool {
+            moveOperationBool = true
+            let node = self.children[moveOperationIndex+4] as! SKSpriteNode
+            var index = 0
+            var modifier = 0
+            if right{
+                modifier = 1
+            }else if !right{
+                modifier = -1
+            }
+            var array = NSMutableArray()
+            if numberHidden == 0 {
+                array = labelPos2
+            }else if numberHidden == 1 {
+                array.add(labelPos.object(at: 1) as! CGPoint)
+                array.add(labelPos.object(at: 2) as! CGPoint)
+            }else if numberHidden == 2 {
+                array.add(labelPos2.object(at: 1) as! CGPoint)
+            }
+            for var i in 0..<array.count{
+                var point = array.object(at: i) as! CGPoint
+                if point.y < self.frame.size.height/4{
+                    point.x += self.frame.size.width/2
+                    point.y += self.frame.size.height/2
+                    array.replaceObject(at: i, with: point)
+                }
+            }
+            for var i in 0..<array.count{
+                if node.position == array.object(at: i) as! CGPoint{
+                    index = i+modifier
+                }
+            }
+            
+            if index < array.count && index >= 0{
+                let pos = node.position
+                node.run(SKAction.move(to: array.object(at: index) as! CGPoint, duration: 0.5))
+            }
+            delay(0.5){
+                self.moveOperationBool = false
+            }
+        }
     }
     
     func switchNumbers(right: Bool) {
