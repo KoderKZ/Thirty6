@@ -268,59 +268,69 @@ extension GameScene {
     }
     
     func operateNumbers(node: SKSpriteNode) {
-        let operationArray = getOperationPosArray()
-
-        var index = 0
-        for var i in 1..<operationArray.count+1{
-            if node.position == operationArray.object(at: i) as! CGPoint{
-                index = i
-            }
-        }
-        let numberPosArray = getNumberPosArray()
-        var node1 = SKNode()
-        var node2 = SKNode()
-        for var i in 1..<numberPosArray.count+1{
-            if self.children[i].position == numberPosArray.object(at: index-1) as! CGPoint{
-                node1 = self.children[i]
-            }else if self.children[i].position == numberPosArray.object(at: index+1) as! CGPoint{
-                node2 = self.children[i]
-            }
-        }
-
-        let labelNode1 = node1.children[0] as! SKLabelNode
-        let labelNode2 = node2.children[0] as! SKLabelNode
-        let number1 = Int(labelNode1.text!)!
-        let number2 = Int(labelNode2.text!)!
-        
-        var finalNumber = 0
-        switch node {
-        case addSprite:
-            finalNumber = number1+number2
-        case subtractSprite:
-            finalNumber = number1-number2
-        case multiplySprite:
-            finalNumber = number1*number2
-        case divideSprite:
-            finalNumber = number1/number2
-        default:
-            break
-        }
-        
-        let numberPos = CGPoint(x: node.position.x-self.frame.size.width/2, y: node.position.y-self.frame.size.height/2)
-        node1.run(SKAction.move(to: numberPos, duration: 0.5))
-        node2.run(SKAction.move(to: numberPos, duration: 0.5))
-        
-        node.run(SKAction.fadeOut(withDuration: 0.5))
-        node1.run(SKAction.fadeOut(withDuration: 0.5))
-        node2.run(SKAction.fadeOut(withDuration: 0.5))
-        
-        delay(0.5){
-            for var i in 0..<self.operationPos.count {
-                let operationNode = self.children[i+5] as! SKSpriteNode
-                operationNode.position = self.operationPos.object(at: i) as! CGPoint
-            }
-        }
-        node2.run(SKAction.fadeIn(withDuration: 0.25))
+//        let operationArray = getOperationPosArray()
+//
+//        var index = 0
+//        for var i in 1..<operationArray.count+1{
+//            if node.position == operationArray.object(at: i) as! CGPoint{
+//                index = i
+//            }
+//        }
+//        let numberPosArray = getNumberPosArray()
+//        var node1 = SKNode()
+//        var node2 = SKNode()
+//        for var i in 1..<numberPosArray.count+1{
+//            if self.children[i].position == numberPosArray.object(at: index-1) as! CGPoint{
+//                node1 = self.children[i]
+//            }else if self.children[i].position == numberPosArray.object(at: index+1) as! CGPoint{
+//                node2 = self.children[i]
+//            }
+//        }
+//
+//        let labelNode1 = node1.children[0] as! SKLabelNode
+//        let labelNode2 = node2.children[0] as! SKLabelNode
+//        let number1 = Int(labelNode1.text!)!
+//        let number2 = Int(labelNode2.text!)!
+//        
+//        var finalNumber = 0
+//        switch node {
+//        case addSprite:
+//            finalNumber = number1+number2
+//        case subtractSprite:
+//            finalNumber = number1-number2
+//        case multiplySprite:
+//            finalNumber = number1*number2
+//        case divideSprite:
+//            finalNumber = number1/number2
+//        default:
+//            break
+//        }
+//        
+//        let numberPos = CGPoint(x: node.position.x-self.frame.size.width/2, y: node.position.y-self.frame.size.height/2)
+//        node1.run(SKAction.move(to: numberPos, duration: 0.5))
+//        node2.run(SKAction.move(to: numberPos, duration: 0.5))
+//        
+//        node.run(SKAction.fadeOut(withDuration: 0.5))
+//        node1.run(SKAction.fadeOut(withDuration: 0.5))
+//        node2.run(SKAction.fadeOut(withDuration: 0.5))
+//        
+//        delay(0.5){
+//            for var i in 0..<self.operationPos.count {
+//                let operationNode = self.children[i+5] as! SKSpriteNode
+//                operationNode.position = self.operationPos.object(at: i) as! CGPoint
+//            }
+//        }
+//        node2.run(SKAction.fadeIn(withDuration: 0.25))
+//        delay(0.25){
+//            let wait1 = SKAction.wait(forDuration: 0.125)
+//            let block1 = SKAction.run({
+//                labelNode2.text = "\(Int(labelNode2.text!)!+1)"
+//            })
+//            let sequence1 = SKAction.sequence([wait1, block1])
+//            labelNode2.run(SKAction.repeat(sequence1, count: finalNumber))
+//        }
+//        hiddenArray.add(node1)
+//        lastOperated.add(node2)
         
     }
     func getNumberPosArray() -> NSMutableArray {

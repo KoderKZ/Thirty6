@@ -255,23 +255,28 @@ class GameScene: SKScene {
         }
         var touch = touches.first?.location(in: self)
         
-        if moveOperationIndex != 0 && !moveOperationBool{
+        if moveOperationIndex != 0{
             switch moveOperationIndex {
             case 1:
                 if addSprite.position == operationPos.object(at: 0) as! CGPoint{
                     firstOperationMove(node: addSprite)
+                }else{
+                    operateNumbers(node: addSprite)
                 }
             case 2:
                 if subtractSprite.position == operationPos.object(at: 1) as! CGPoint{
                     firstOperationMove(node: subtractSprite)
+                    operateNumbers(node: subtractSprite)
                 }
             case 3:
                 if multiplySprite.position == operationPos.object(at: 2) as! CGPoint{
                     firstOperationMove(node: multiplySprite)
+                    operateNumbers(node: multiplySprite)
                 }
             case 4:
                 if divideSprite.position == operationPos.object(at: 3) as! CGPoint{
                     firstOperationMove(node: divideSprite)
+                    operateNumbers(node: divideSprite)
                 }
             default:
                 break
