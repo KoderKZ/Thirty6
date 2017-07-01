@@ -156,7 +156,6 @@ extension GameScene {
     
     func createNumLabel(num: Int) -> SKNode {
 
-//        let operationMargin:CGFloat = 10
         
         let numLabelNode = SKNode()
         
