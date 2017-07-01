@@ -142,7 +142,6 @@ class GameScene: SKScene {
 
         let touchedNode = self.atPoint(touch!)
         
-        //if touchedNode != nil{
         let touchedNodeParent = touchedNode.parent
         if touchedNodeParent == firstNumberNode{
             moveNodeIndex = 1
