@@ -88,9 +88,6 @@ class GameLogic {
         }
         let lastNum = abs(36-calculateNumber)
         numberArray.add(lastNum)
-//        if lastNum > 15 || lastNum < -15{
-//             numberArray = calculateNumbers2()
-//        }
         return numberArray
     }
     
