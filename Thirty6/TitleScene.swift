@@ -25,18 +25,18 @@ class TitleScene:SKScene{
         doneLoading = false
         super.init(size:size)
         
-        backgroundColor = .init(red: 255/255, green: 255/255, blue: 224/255, alpha: 1)
+        backgroundColor = SKColor(red: 21/255, green: 27/255, blue: 31/255, alpha: 1.0)
         titleLabel = SKLabelNode(text: "Thirty6")
         titleLabel.fontName = "TimeBurner"
         titleLabel.position = CGPoint(x: self.size.width/2, y: self.size.height/4*3)
-        titleLabel.fontColor = .black
+        titleLabel.fontColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
         titleLabel.fontSize = 40
         addChild(titleLabel)
         
         playLabel = SKLabelNode(text: "Swipe Right to Play")
         playLabel.fontName = "TimeBurner"
         playLabel.position = CGPoint(x: self.size.width/2, y: self.size.height/4)
-        playLabel.fontColor = .black
+        playLabel.fontColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
         playLabel.fontSize = 40
         addChild(playLabel)
         

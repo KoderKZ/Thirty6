@@ -106,13 +106,21 @@ class GameLogic {
     func operateNumbers(num1: Int, num2: Int, operation: Int) -> Int {
         switch operation {
         case 1:
-            return num2+num1
+            return num1+num2
         case 2:
-            return num2-num1
+            if num1-num2 < 0{
+                return -1
+            }else{
+                return num1-num2
+            }
         case 3:
-            return num2*num1
+            return num1*num2
         case 4:
-            return num2/num1
+            if num1%num2 != 0{
+                return -1
+            }else{
+                return num1/num2
+            }
         default:
             return 0
         }
