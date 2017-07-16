@@ -71,8 +71,8 @@ class GameScene: SKScene {
     
     var inOperatingAnimation:Bool!
     
-    var line1:CAShapeLayer!
-    var line2:CAShapeLayer!
+    var line1:SKShapeNode!
+    var line2:SKShapeNode!
     var number1:Int!
     var number2:Int!
     var drawingLine:Bool!
@@ -144,84 +144,83 @@ class GameScene: SKScene {
         movedAmount = 0
         
         setUpErrorOverlay()
-        
-        line1 = CAShapeLayer()
-        line2 = CAShapeLayer()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        var touch = touches.first?.location(in: self)
+        if !drawingLine{
+            var touch = touches.first?.location(in: self)
 
-        stillTouching = true
-        
-        //if touchedNode != nil{
-        if gameLogic.checkIfNodeInTouch(node: addSprite, touch: touch!, multiplier: 2){
-            moveOperationIndex = 1
-            beginOperationPos = addSprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: subtractSprite, touch: touch!, multiplier: 2){
-            moveOperationIndex = 2
-            beginOperationPos = subtractSprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: multiplySprite, touch: touch!, multiplier: 2){
-            moveOperationIndex = 3
-            beginOperationPos = multiplySprite.position
-        }else if gameLogic.checkIfNodeInTouch(node: divideSprite, touch: touch!, multiplier: 2){
-            moveOperationIndex = 4
-            beginOperationPos = divideSprite.position
-        }else{
-            moveOperationIndex = 0
-        }
+            stillTouching = true
+            
+            //if touchedNode != nil{
+            if gameLogic.checkIfNodeInTouch(node: addSprite, touch: touch!, multiplier: 2){
+                moveOperationIndex = 1
+                beginOperationPos = addSprite.position
+            }else if gameLogic.checkIfNodeInTouch(node: subtractSprite, touch: touch!, multiplier: 2){
+                moveOperationIndex = 2
+                beginOperationPos = subtractSprite.position
+            }else if gameLogic.checkIfNodeInTouch(node: multiplySprite, touch: touch!, multiplier: 2){
+                moveOperationIndex = 3
+                beginOperationPos = multiplySprite.position
+            }else if gameLogic.checkIfNodeInTouch(node: divideSprite, touch: touch!, multiplier: 2){
+                moveOperationIndex = 4
+                beginOperationPos = divideSprite.position
+            }else{
+                moveOperationIndex = 0
+            }
 
-        let touchedNode = self.atPoint(touch!)
-        
-        let touchedNodeParent = touchedNode.parent
-        if touchedNodeParent == firstNumberNode{
-            moveNodeIndex = 1
-            beginNumberPos = firstNumberNode.position
-        }else if touchedNodeParent == secondNumberNode{
-            moveNodeIndex = 2
-            beginNumberPos = secondNumberNode.position
-        }else if touchedNodeParent == thirdNumberNode{
-            moveNodeIndex = 3
-            beginNumberPos = thirdNumberNode.position
-        }else if touchedNodeParent == fourthNumberNode{
-            moveNodeIndex = 4
-            beginNumberPos = fourthNumberNode.position
-        }else{
-            moveNodeIndex = 0
-        }
-        
-        splitCounter = 0
-        splitTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { splitTimer in
-            if self.hiddenArray.count != 0 && self.moveNodeIndex != 0 && !self.inUndoProcess && !self.inOperatingAnimation{
-                self.drawingLine = true
-                self.stillTouching = true
-                let node = self.children[self.moveNodeIndex].children[0] as! SKShapeNode
-                self.splitCounter! += 1
-                if self.splitCounter == 5{
-                    var checkIndex = 0
-                    switch node.parent!{
-                    case self.firstNumberNode:
-                        checkIndex = 1
-                    case self.secondNumberNode:
-                        checkIndex = 2
-                    case self.thirdNumberNode:
-                        checkIndex = 3
-                    case self.fourthNumberNode:
-                        checkIndex = 4
-                    default:break
+            let touchedNode = self.atPoint(touch!)
+            
+            let touchedNodeParent = touchedNode.parent
+            if touchedNodeParent?.alpha != 0{
+                if touchedNodeParent == firstNumberNode{
+                    moveNodeIndex = 1
+                    beginNumberPos = firstNumberNode.position
+                }else if touchedNodeParent == secondNumberNode{
+                    moveNodeIndex = 2
+                    beginNumberPos = secondNumberNode.position
+                }else if touchedNodeParent == thirdNumberNode{
+                    moveNodeIndex = 3
+                    beginNumberPos = thirdNumberNode.position
+                }else if touchedNodeParent == fourthNumberNode{
+                    moveNodeIndex = 4
+                    beginNumberPos = fourthNumberNode.position
+                }else{
+                    moveNodeIndex = 0
+                }
+            }
+            splitCounter = 0
+            splitTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { splitTimer in
+                if self.hiddenArray.count != 0 && self.moveNodeIndex != 0 && !self.inUndoProcess && !self.inOperatingAnimation{
+                    self.drawingLine = true
+                    self.stillTouching = true
+                    let node = self.children[self.moveNodeIndex+7].children[0] as! SKShapeNode
+                    self.splitCounter! += 1
+                    if self.splitCounter == 15{
+                        var checkIndex = 0
+                        switch node.parent!{
+                        case self.firstNumberNode:
+                            checkIndex = 1
+                        case self.secondNumberNode:
+                            checkIndex = 2
+                        case self.thirdNumberNode:
+                            checkIndex = 3
+                        case self.fourthNumberNode:
+                            checkIndex = 4
+                        default:break
+                        }
+                        if self.lastOperated.contains(checkIndex){
+                            self.undo(lastOperatedNode: node.parent!)
+                        }
+    //                    node.fillColor = self.labelColor
+                        self.splitCounter = 0
+                        self.splitTimer.invalidate()
                     }
-                    if self.lastOperated.contains(checkIndex){
-                        self.undo(lastOperatedNode: node.parent!)
-                    }
-//                    node.fillColor = self.labelColor
-                    self.splitCounter = 0
+                }else{
                     self.splitTimer.invalidate()
                 }
-            }else{
-                self.splitTimer.invalidate()
-                self.drawingLine = false
-            }
-        })
+            })
+        }
         
     }
     
@@ -274,71 +273,156 @@ class GameScene: SKScene {
             switch moveNodeIndex {
             case 1,2,3,4:
                 var path = UIBezierPath()
-                path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos))
-                path.addLine(to: calculatePoint(radius: numberRadius, point: beginNumberPos, numberPos: beginNumberPos))
-                if line1.superlayer == nil && !drawingLine && !inUndoProcess && !switchingNumbers{
+                if line1.alpha == 0 && !drawingLine && !inUndoProcess && !switchingNumbers{
+                    path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos))
                     drawingLine = true
+                    inOperatingAnimation = true
                     number1 = moveNodeIndex
-                    line1 = CAShapeLayer()
-                    line1.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
-                    line1.strokeColor = labelColor.cgColor
+                    line1.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                    line1.strokeColor = labelColor
                     line1.lineWidth = 2
-                    line1.path = path.cgPath
+                    line1.alpha = 1
                     
-                    view?.layer.addSublayer(line1)
-                    let animation = CABasicAnimation(keyPath: "strokeEnd")
-                    animation.fromValue = 0
-                    animation.duration = 0.25
-                    line1.add(animation, forKey: "MyAnimation")
-                    delay(0.25){
-                        self.drawingLine = false
-                    }
-                }else if line2.superlayer == nil && moveNodeIndex != number1 && !drawingLine && !inUndoProcess && !switchingNumbers{
+                    var endPoint = calculatePoint(radius: numberRadius, point: beginNumberPos, numberPos: beginNumberPos)
+                    var startPoint = calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos)
+                    var diffPoint = calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos)
+                    diffPoint.x -= endPoint.x
+                    diffPoint.y -= endPoint.y
+                    var counter = 0
+                    let lineUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.0025, repeats: true, block: { lineUpdateTimer in
+                        path = UIBezierPath()
+                        startPoint.x -= diffPoint.x/100
+                        startPoint.y -= diffPoint.y/100
+                        path.move(to: self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: self.beginNumberPos))
+                        path.addLine(to: startPoint)
+                        self.line1.path = path.cgPath
+                        if counter == 100{
+                            self.drawingLine = false
+                            self.inOperatingAnimation = false
+                            lineUpdateTimer.invalidate()
+                        }else{
+                            counter += 1
+                        }
+                    })
+                }else if moveNodeIndex != number1 && !drawingLine && !inUndoProcess && !switchingNumbers && !inOperatingAnimation{
+                    inOperatingAnimation = true
+                    drawingLine = true
+                    moveOperationBool = true
+                    number2 = moveNodeIndex
+                    line2.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                    line2.strokeColor = labelColor
+                    line2.lineWidth = 2
+                    line2.alpha = 1
+                    
+                    path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos))
+                    var endPoint = calculatePoint(radius: numberRadius, point: beginNumberPos, numberPos: beginNumberPos)
+                    var startPoint = calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos)
+                    var diffPoint = calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos)
+                    diffPoint.x -= endPoint.x
+                    diffPoint.y -= endPoint.y
+                    var counter = 0
+                    let lineUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.0025, repeats: true, block: { lineUpdateTimer in
+                        path = UIBezierPath()
+                        startPoint.x -= diffPoint.x/100
+                        startPoint.y -= diffPoint.y/100
+                        path.move(to: self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: self.beginNumberPos))
+                        path.addLine(to: startPoint)
+                        self.line2.path = path.cgPath
+                        if counter == 100{
+                            lineUpdateTimer.invalidate()
+                        }else{
+                            counter += 1
+                        }
+                    })
                     delay(0.25){
                         var node1:SKNode = self.ThirtysixLabel
                         var node2:SKNode = self.ThirtysixLabel
-                        var node1Index = 0
-                        var node2Index = 0
-                        for var i in 6..<10{
-                            if i == self.number1+5 {
+                        for var i in 8..<12{
+                            if i == self.number1+7 {
                                 if node1 == self.ThirtysixLabel{
-                                    node1 = self.children[self.number1+5]
-                                    node1Index = i
+                                    node1 = self.children[self.number1+7]
                                 }else{
-                                    node2 = self.children[self.number1+5]
-                                    node2Index = i
+                                    node2 = self.children[self.number1+7]
                                 }
-                            }else if i == self.number2+5{
-                                if node1 == self.ThirtysixLabel{
-                                    node1 = self.children[self.number2+5]
-                                    node1Index = i
+                            }else if i == self.number2+7{
+                                if node2 == self.ThirtysixLabel{
+                                    node2 = self.children[self.number2+7]
                                 }else{
-                                    node2 = self.children[self.number2+5]
-                                    node2Index = i
+                                    node1 = self.children[self.number2+7]
                                 }
-                            }else{
-                                self.children[i].run(SKAction.fadeOut(withDuration: 0.25))
                             }
                         }
+                        if self.number2 < self.number1 {
+                            let node1Index = self.children.index(of: node1)!
+                            node2.removeFromParent()
+                            self.insertChild(node2, at: node1Index)
+                        }
                         var oldPathPoint = self.calculatePoint(radius: self.numberRadius, point: self.beginNumberPos, numberPos: self.beginNumberPos)
+                        let beginLinePos = self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: node2.position)
                         let oldNode2Pos = node2.position
                         node2.run(SKAction.move(to: CGPoint(x: 0, y: 0), duration: 1))
-                        var counter = 0
+                        let circle = node2.children[0] as! SKShapeNode
+                        let originalCircleColor = circle.fillColor.cgColor
+                        let label = node2.children[1] as! SKLabelNode
+                        let originalLabelColor = label.fontColor?.cgColor
+                        let redDiff = ((self.labelColor.cgColor.components?[0])!*255-(self.viewBackgroundColor.cgColor.components?[0])!*255)/70
+                        let greenDiff = ((self.labelColor.cgColor.components?[1])!*255-(self.viewBackgroundColor.cgColor.components?[1])!*255)/70
+                        let blueDiff = ((self.labelColor.cgColor.components?[2])!*255-(self.viewBackgroundColor.cgColor.components?[2])!*255)/70
+                        var counter:CGFloat = 0
                         let lineUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { lineUpdateTimer in
                             path = UIBezierPath()
                             oldPathPoint.x -= oldNode2Pos.x/100
-                            oldPathPoint.y += oldNode2Pos.y/100
-                            path.move(to: self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: node2.position))
+                            oldPathPoint.y -= oldNode2Pos.y/100
+                            path.move(to: beginLinePos)
                             path.addLine(to: oldPathPoint)
                             self.line2.path = path.cgPath
+                            
+                            if !self.lastOperated.contains(self.number2){
+                                circle.fillColor = SKColor(colorLiteralRed: Float(originalCircleColor.components![0]*255+(redDiff*counter))/255, green: Float(originalCircleColor.components![1]*255+(greenDiff*counter))/255, blue: Float(originalCircleColor.components![2]*255+(blueDiff*counter))/255, alpha: 1)
+                                
+                                label.fontColor = SKColor(colorLiteralRed: Float((originalLabelColor?.components![0])!*255-redDiff*counter)/255, green: Float((originalLabelColor?.components![1])!*255-greenDiff*counter)/255, blue: Float((originalLabelColor?.components![2])!*255-blueDiff*counter)/255, alpha: 1)
+                            }
+                            
                             if counter == 70{
-                                self.line2.removeAllAnimations()
-                                self.line2.removeFromSuperlayer()
+                                self.line2.alpha = 0
                                 lineUpdateTimer.invalidate()
                             }else{
                                 counter += 1
                             }
                         })
+                        
+                        self.delay(1){
+                            node2.run(SKAction.move(to: node1.position, duration: 1))
+                            var updatePathPoint = self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: node1.position)
+                            var counter = 0
+                            let lineUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { lineUpdateTimer in
+                                path = UIBezierPath()
+                                updatePathPoint.x += node1.position.x/100
+                                updatePathPoint.y += node1.position.y/100
+                                path.move(to: updatePathPoint)
+                                path.addLine(to: self.calculatePoint(radius: self.numberRadius, point: node1.position, numberPos: node1.position))
+                                self.line1.path = path.cgPath
+                                if counter == 65{
+                                    self.line1.alpha = 0
+                                    self.drawingLine = false
+                                    self.inOperatingAnimation = false
+                                    self.delay(0.25){
+                                        let node1Label = node1.children[1] as! SKLabelNode
+                                        let node2Label = node2.children[1] as! SKLabelNode
+                                        let number = self.gameLogic.operateNumbers(num1: Int(node1Label.text!)!, num2: Int(node2Label.text!)!, operation: self.operationInt)
+                                        
+                                    }
+                                    lineUpdateTimer.invalidate()
+                                }else{
+                                    counter += 1
+                                }
+                            })
+                            self.delay(1){
+                                node1.alpha = 0
+                                self.hiddenArray.add(self.number1)
+                                self.lastOperated.add(self.number2)
+                            }
+                        }
                     }
                 }
             default:
@@ -354,10 +438,8 @@ class GameScene: SKScene {
         }else{
             let touchedNode = self.atPoint(touch!)
             if gameLogic.checkIfNodeInTouch(node: backButton, touch: touch!, multiplier: 1.5){
-                line1.removeAllAnimations()
-                line2.removeAllAnimations()
-                line1.removeFromSuperlayer()
-                line2.removeFromSuperlayer()
+                line1.alpha = 0
+                line2.alpha = 0
                 let transition = SKTransition.flipVertical(withDuration: 0.5)
                 let titleScene = TitleScene(size: self.size)
                 self.view?.presentScene(titleScene, transition: transition)
@@ -365,7 +447,7 @@ class GameScene: SKScene {
         }
         
 
-        if drawingLine{
+        if drawingLine && !inOperatingAnimation{
             drawingLine = false
         }
         

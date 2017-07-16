@@ -47,7 +47,7 @@ extension GameScene {
         fourthNumberLabel.text = "\(numberArray[3])"
         fourthNumberLabel.fontColor = labelColor
         
-        for var i in 6..<10{
+        for var i in 8..<12{
             let circle = self.children[i].children[0] as! SKShapeNode
             circle.fillColor = viewBackgroundColor
         }
@@ -58,7 +58,7 @@ extension GameScene {
         operation4 = 0
         operationInt = 1
         
-        for var i in 6..<10{
+        for var i in 8..<12{
             self.children[i].position = labelPos.object(at: i-1) as! CGPoint
             self.children[i].alpha = 1
         }
@@ -133,7 +133,7 @@ extension GameScene {
 
         
         let operationPoint = operationPos.object(at: 1) as! CGPoint
-        let updatedNumberPos = CGPoint(x: numberPos.x+self.frame.size.width/2, y: numberPos.y+self.frame.size.height/2)
+        let updatedNumberPos = CGPoint(x: numberPos.x+self.frame.size.width/2, y: numberPos.y+self.frame.size.height)
         let aSquared = (operationPoint.x-updatedNumberPos.x) * (operationPoint.x-updatedNumberPos.x)
         let bSquared = (operationPoint.y-updatedNumberPos.y) * (operationPoint.y-updatedNumberPos.y)
         let c = sqrt(aSquared+bSquared)
@@ -144,7 +144,7 @@ extension GameScene {
         returnPoint = CGPoint(x: x, y: y)
         
         if point == numberPos{
-            returnPoint.y += self.frame.size.height
+            returnPoint.y += self.frame.size.height/2
             returnPoint.x += self.frame.size.width/2
         }
         
@@ -250,6 +250,14 @@ extension GameScene {
         circle.strokeColor = labelColor
         circle.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         addChild(circle)
+        
+        line1 = SKShapeNode()
+        line2 = SKShapeNode()
+        line1.alpha = 0
+        line2.alpha = 0
+        
+        addChild(line1)
+        addChild(line2)
         
         addChild(firstNumberNode)
         addChild(secondNumberNode)
@@ -418,10 +426,8 @@ extension GameScene {
     func switchNumbers(right: Bool) {
         if !switchingNumbers && moveNodeIndex != 0{
             switchingNumbers = true
-            line1.removeAllAnimations()
-            line1.removeFromSuperlayer()
-            line2.removeAllAnimations()
-            line2.removeFromSuperlayer()
+            line1.alpha = 0
+            line2.alpha = 0
             let node = self.children[moveNodeIndex] 
             var index = 0
             var modifier = 0
@@ -444,7 +450,7 @@ extension GameScene {
             }
             if index < 4 && index >= 0{
                 var node2:SKNode = SKNode()
-                checkLoop: for var i in 6..<10{
+                checkLoop: for var i in 8..<12{
                     if moveNodeIndex != i{
                         if self.children[i].position == labelPos.object(at: index) as! CGPoint{
                             node2 = self.children[i]
@@ -511,10 +517,8 @@ extension GameScene {
         var hiddenNodeIndex = self.children.index(of: hiddenNode)
         
         drawingLine = true
-        line1.removeAllAnimations()
-        line1.removeFromSuperlayer()
-        line2.removeAllAnimations()
-        line2.removeFromSuperlayer()
+        line1.alpha = 0
+        line2.alpha = 0
         var hideCounter = 0
         delay(0.3){
             let lastOperatedLabel = lastOperatedNode.children[1] as! SKLabelNode
@@ -569,7 +573,7 @@ extension GameScene {
             labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
             labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
             var moveCounter = 0
-            moveNodes: for var i in 6..<10{
+            moveNodes: for var i in 8..<12{
                 if self.children[i] != lastOperatedNode && self.children[i] != hiddenNode && !self.hiddenArray.contains(self.children[i]){
                     self.children[i].run(SKAction.move(to: labelPosArray.object(at: moveCounter) as! CGPoint, duration: 0.1))
                     moveCounter += 1
