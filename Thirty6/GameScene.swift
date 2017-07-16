@@ -80,6 +80,9 @@ class GameScene: SKScene {
     var stillTouching:Bool!
     var inUndoProcess:Bool!
     
+    var viewBackgroundColor:SKColor!
+    var labelColor:SKColor!
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -88,6 +91,9 @@ class GameScene: SKScene {
         super.init(size: size)
         
         gameLogic = GameLogic()
+        
+        viewBackgroundColor = SKColor(red: 21/255, green: 27/255, blue: 31/255, alpha: 1.0)
+        labelColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
         
         stillTouching = false
         inUndoProcess = false
@@ -112,8 +118,7 @@ class GameScene: SKScene {
             numberArray = gameLogic.calculateNumbers2()
         }
         
-        //SKColor(red: 53/255, green: 53/255, blue: 50/255, alpha: 1.0)
-        backgroundColor = SKColor(red: 21/255, green: 27/255, blue: 31/255, alpha: 1.0)
+        backgroundColor = viewBackgroundColor
         
         labelPos = NSMutableArray(capacity: 4)
         labelPos2 = NSMutableArray(capacity: 4)
@@ -187,36 +192,29 @@ class GameScene: SKScene {
         
         splitCounter = 0
         splitTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { splitTimer in
-            if self.hiddenArray.count != 0 && self.moveNodeIndex != 0{
+            if self.hiddenArray.count != 0 && self.moveNodeIndex != 0 && !self.inUndoProcess && !self.inOperatingAnimation{
                 self.drawingLine = true
                 self.stillTouching = true
-                let node = self.children[self.moveNodeIndex].children[0] as! SKLabelNode
+                let node = self.children[self.moveNodeIndex].children[0] as! SKShapeNode
                 self.splitCounter! += 1
-                if self.splitCounter == 10 {
-                    node.fontColor = .black
-                }else if self.splitCounter > 10{
-                    let colorInt1 = (Double(self.splitCounter-10)*17.6)
-                    let colorInt2 = (Double(self.splitCounter-10)*19.6)
-                    let colorInt3 = (Double(self.splitCounter-10)*22.2)
-                    node.fontColor = UIColor.init(red: CGFloat(colorInt1/255), green: CGFloat(colorInt2/255), blue: CGFloat(colorInt3/255), alpha: 1)
-                }
-                if self.splitCounter == 20{
+                if self.splitCounter == 5{
                     var checkIndex = 0
-                    switch node{
-                    case self.firstNumberLabel:
+                    switch node.parent!{
+                    case self.firstNumberNode:
                         checkIndex = 1
-                    case self.secondNumberLabel:
+                    case self.secondNumberNode:
                         checkIndex = 2
-                    case self.thirdNumberLabel:
+                    case self.thirdNumberNode:
                         checkIndex = 3
-                    case self.fourthNumberLabel:
+                    case self.fourthNumberNode:
                         checkIndex = 4
                     default:break
                     }
                     if self.lastOperated.contains(checkIndex){
                         self.undo(lastOperatedNode: node.parent!)
                     }
-                    node.fontColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
+//                    node.fillColor = self.labelColor
+                    self.splitCounter = 0
                     self.splitTimer.invalidate()
                 }
             }else{
@@ -239,10 +237,23 @@ class GameScene: SKScene {
             movedAmount! -= (previousTouch?.x)!-(touch?.x)!
         }
         if movedAmount > self.frame.size.width/7{
-            operationSwitch(right: true)
+            if (touch?.y)! < (operationPos[0] as! CGPoint).y+addSprite.frame.size.height*1.5 &&
+                (touch?.y)! > (operationPos[0] as! CGPoint).y-addSprite.frame.size.height*1.5{
+                operationSwitch(right: true)
+            }else if (touch?.y)! < (labelPos[0] as! CGPoint).y+self.frame.size.height/2+firstNumberLabel.frame.size.height*1.5 &&
+                (touch?.y)! > (labelPos[0] as! CGPoint).y+self.frame.size.height/2-firstNumberLabel.frame.size.height*1.5{
+                switchNumbers(right: true)
+            }
             movedAmount = 0
         }else if movedAmount < -self.frame.size.width/7{
-            operationSwitch(right: false)
+            if (touch?.y)! < (operationPos[0] as! CGPoint).y+addSprite.frame.size.height*1.5 &&
+                (touch?.y)! > (operationPos[0] as! CGPoint).y-addSprite.frame.size.height*1.5{
+                operationSwitch(right: false)
+            }else if (touch?.y)! < (labelPos[0] as! CGPoint).y+self.frame.size.height/2+firstNumberLabel.frame.size.height*1.5 &&
+                (touch?.y)! > (labelPos[0] as! CGPoint).y+self.frame.size.height/2-firstNumberLabel.frame.size.height*1.5{
+                switchNumbers(right: false)
+                
+            }
             movedAmount = 0
         }
         
@@ -250,11 +261,13 @@ class GameScene: SKScene {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         movedAmount = 0
-        splitTimer.invalidate()
-        splitCounter = 0
+        if splitCounter > 0{
+            splitTimer.invalidate()
+            splitCounter = 0
+            drawingLine = false
+        }
         stillTouching = false
         if !inOperatingAnimation && !inUndoProcess{
-            drawingLine = false
             moveOperationBool = false
         }
         if moveNodeIndex != 0{
@@ -263,12 +276,12 @@ class GameScene: SKScene {
                 let path = UIBezierPath()
                 path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint))
                 path.addLine(to: calculatePoint(radius: numberRadius, point: beginNumberPos))
-                if line1.superlayer == nil && !drawingLine && !inUndoProcess{
+                if line1.superlayer == nil && !drawingLine && !inUndoProcess && !switchingNumbers{
                     drawingLine = true
                     number1 = moveNodeIndex
                     line1 = CAShapeLayer()
                     line1.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
-                    line1.strokeColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0).cgColor
+                    line1.strokeColor = labelColor.cgColor
                     line1.lineWidth = 2
                     line1.path = path.cgPath
                     
@@ -280,14 +293,14 @@ class GameScene: SKScene {
                     delay(0.25){
                         self.drawingLine = false
                     }
-                }else if line2.superlayer == nil && moveNodeIndex != number1 && !drawingLine && !inUndoProcess{
+                }else if line2.superlayer == nil && moveNodeIndex != number1 && !drawingLine && !inUndoProcess && !switchingNumbers{
                     inOperatingAnimation = true
                     drawingLine = true
                     moveOperationBool = true
                     number2 = moveNodeIndex
                     line2 = CAShapeLayer()
                     line2.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
-                    line2.strokeColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0).cgColor
+                    line2.strokeColor = labelColor.cgColor
                     line2.lineWidth = 2
                     line2.path = path.cgPath
                     
@@ -325,12 +338,21 @@ class GameScene: SKScene {
                                 self.children[i].run(SKAction.fadeOut(withDuration: 0.25))
                             }
                         }
-                        if node1.position.x > node2.position.x {
-                            let tempNode = node1
-                            node1 = node2
-                            node2 = tempNode
-                            node2Index = node1Index
+                        self.numberHidden! -= 1
+                        let originalLabelPosArray = self.getLabelPosArray()
+                    
+                        var node1PosIndex = 0
+                        var node2PosIndex = 0
+                        
+                        for var i in 0..<originalLabelPosArray.count{
+                            if node1.position == originalLabelPosArray.object(at: i) as! CGPoint{
+                                node1PosIndex = i
+                            }else if node2.position == originalLabelPosArray.object(at: i) as! CGPoint{
+                                node2PosIndex = i
+                            }
                         }
+                        self.numberHidden! += 1
+                        
                         self.line1.strokeColor = SKColor.clear.cgColor
                         self.line2.strokeColor = SKColor.clear.cgColor
                         self.delay(0.25){
@@ -360,8 +382,8 @@ class GameScene: SKScene {
                                 node1.run(SKAction.fadeOut(withDuration: 0.4))
                                 node2.run(SKAction.fadeOut(withDuration: 0.4))
                                 
-                                let node1Label = node1.children[0] as! SKLabelNode
-                                let node2Label = node2.children[0] as! SKLabelNode
+                                let node1Label = node1.children[1] as! SKLabelNode
+                                let node2Label = node2.children[1] as! SKLabelNode
                                 
                                 let int1 = Int(node1Label.text!)!
                                 let int2 = Int(node2Label.text!)!
@@ -384,13 +406,20 @@ class GameScene: SKScene {
                                         self.numberHidden! -= 1
                                         labelPosArray = self.getLabelPosArray()
                                         self.delay(0.2){
-                                            node1.run(SKAction.move(to: labelPosArray.object(at: labelPosArray.count-1) as! CGPoint, duration: 0.01))
-                                            node2.run(SKAction.move(to: labelPosArray.object(at: labelPosArray.count-2) as! CGPoint, duration: 0.01))
+                                            node1.run(SKAction.move(to: labelPosArray.object(at: node1PosIndex) as! CGPoint, duration: 0.01))
+                                            node2.run(SKAction.move(to: labelPosArray.object(at: node2PosIndex) as! CGPoint, duration: 0.01))
+                                            labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
+                                            labelPosArray.remove(labelPosArray.object(at: node2PosIndex-1))
                                             node2.alpha = 1
                                             node1.alpha = 1
                                         }
                                     }else{
-                                        node1.run(SKAction.move(to: labelPosArray.object(at: labelPosArray.count-1) as! CGPoint, duration: 0.01))
+                                        node1.run(SKAction.move(to: labelPosArray.object(at: node1PosIndex) as! CGPoint, duration: 0.01))
+                                        labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
+                                        
+                                        let nodeCircle = node1.children[0] as! SKShapeNode
+                                        node1Label.fontColor = self.viewBackgroundColor
+                                        nodeCircle.fillColor = self.labelColor
                                         node1.run(SKAction.fadeIn(withDuration: 0.2))
                                         node1Label.text = "\(operatedNumber)"
                                         self.hiddenArray.add(node2Index)
@@ -424,14 +453,8 @@ class GameScene: SKScene {
                                         revealHiddenNumbers: for var i in 1..<5{
                                             if self.numberHidden == 2 && operatedNumber != -1{
                                                 break revealHiddenNumbers
-                                            }else if operatedNumber == -1{
-                                                if revealCounter+2 == labelPosArray.count{
-                                                    break revealHiddenNumbers
-                                                }
-                                            }else{
-                                                if revealCounter+1 == labelPosArray.count{
-                                                    break revealHiddenNumbers
-                                                }
+                                            }else if revealCounter == labelPosArray.count{
+                                                break revealHiddenNumbers
                                             }
                                             if i != self.number1 && i != self.number2 && !self.hiddenArray.contains(self.children[i]){
                                                 self.children[i].position = labelPosArray.object(at: revealCounter) as! CGPoint
@@ -502,10 +525,13 @@ class GameScene: SKScene {
         }
         
 
-        if drawingLine == true{
+        if drawingLine{
             drawingLine = false
         }
         
+        if switchingNumbers{
+            switchingNumbers = false
+        }
     }
     
 }
