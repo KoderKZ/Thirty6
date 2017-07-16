@@ -9,105 +9,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Thirty6/GameScene.swift"
-            timestampString = "521912955.222605"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "316"
-            endingLineNumber = "316"
-            landmarkName = "touchesEnded(_:with:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Thirty6.GameScene.(touchesEnded (Swift.Set&lt;__ObjC.UITouch&gt;, with : Swift.Optional&lt;__ObjC.UIEvent&gt;) -&gt; ()).(closure #2)"
-                  moduleName = "Thirty6"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Kevin/Desktop/programming/Thirty6/Thirty6/GameScene.swift"
-                  timestampString = "521854182.890822"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "72">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Thirty6.GameScene.(touchesEnded (Swift.Set&lt;__ObjC.UITouch&gt;, with : Swift.Optional&lt;__ObjC.UIEvent&gt;) -&gt; ()).(closure #2).(closure #1)"
-                  moduleName = "Thirty6"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Kevin/Desktop/programming/Thirty6/Thirty6/GameScene.swift"
-                  timestampString = "521854182.892342"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "28">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Thirty6.GameScene.(touchesEnded (Swift.Set&lt;__ObjC.UITouch&gt;, with : Swift.Optional&lt;__ObjC.UIEvent&gt;) -&gt; ()).(closure #2).(closure #1).(closure #1)"
-                  moduleName = "Thirty6"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Kevin/Desktop/programming/Thirty6/Thirty6/GameScene.swift"
-                  timestampString = "521854182.893737"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "16">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Thirty6.GameScene.(touchesEnded (Swift.Set&lt;__ObjC.UITouch&gt;, with : Swift.Optional&lt;__ObjC.UIEvent&gt;) -&gt; ()).(closure #2).(closure #1).(closure #1).(closure #1)"
-                  moduleName = "Thirty6"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Kevin/Desktop/programming/Thirty6/Thirty6/GameScene.swift"
-                  timestampString = "521854182.895095"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "36">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "function signature specialization &lt;Arg[1] = Value Promoted from Box&gt; of Thirty6.GameScene.(touchesEnded (Swift.Set&lt;__ObjC.UITouch&gt;, with : Swift.Optional&lt;__ObjC.UIEvent&gt;) -&gt; ()).(closure #2).(closure #1).(closure #1).(closure #1).(closure #1)"
-                  moduleName = "Thirty6"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Kevin/Desktop/programming/Thirty6/Thirty6/GameScene.swift"
-                  timestampString = "521854182.896525"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Thirty6/GameElements.swift"
-            timestampString = "521917662.666254"
+            timestampString = "521920263.57264"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
+            startingLineNumber = "496"
+            endingLineNumber = "496"
             landmarkName = "undo(lastOperatedNode:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -119,27 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Thirty6/GameElements.swift"
-            timestampString = "521917662.666254"
+            timestampString = "521920263.57264"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "544"
-            endingLineNumber = "544"
-            landmarkName = "undo(lastOperatedNode:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Thirty6/GameElements.swift"
-            timestampString = "521917662.666254"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563"
+            startingLineNumber = "547"
+            endingLineNumber = "547"
             landmarkName = "undo(lastOperatedNode:)"
             landmarkType = "7">
          </BreakpointContent>
