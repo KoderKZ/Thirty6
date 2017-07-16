@@ -273,9 +273,9 @@ class GameScene: SKScene {
         if moveNodeIndex != 0{
             switch moveNodeIndex {
             case 1,2,3,4:
-                let path = UIBezierPath()
-                path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint))
-                path.addLine(to: calculatePoint(radius: numberRadius, point: beginNumberPos))
+                var path = UIBezierPath()
+                path.move(to: calculatePoint(radius: operationRadius, point: operationPos.object(at: 1) as! CGPoint, numberPos: beginNumberPos))
+                path.addLine(to: calculatePoint(radius: numberRadius, point: beginNumberPos, numberPos: beginNumberPos))
                 if line1.superlayer == nil && !drawingLine && !inUndoProcess && !switchingNumbers{
                     drawingLine = true
                     number1 = moveNodeIndex
@@ -294,213 +294,53 @@ class GameScene: SKScene {
                         self.drawingLine = false
                     }
                 }else if line2.superlayer == nil && moveNodeIndex != number1 && !drawingLine && !inUndoProcess && !switchingNumbers{
-                    inOperatingAnimation = true
-                    drawingLine = true
-                    moveOperationBool = true
-                    number2 = moveNodeIndex
-                    line2 = CAShapeLayer()
-                    line2.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
-                    line2.strokeColor = labelColor.cgColor
-                    line2.lineWidth = 2
-                    line2.path = path.cgPath
-                    
-                    view?.layer.addSublayer(line2)
-                    let animation = CABasicAnimation(keyPath: "strokeEnd")
-                    animation.fromValue = 0
-                    animation.duration = 0.25
-                    line2.add(animation, forKey: "MyAnimation")
-                    
-
-                    
                     delay(0.25){
                         var node1:SKNode = self.ThirtysixLabel
                         var node2:SKNode = self.ThirtysixLabel
                         var node1Index = 0
                         var node2Index = 0
-                        for var i in 1..<5{
-                            if i == self.number1 {
+                        for var i in 6..<10{
+                            if i == self.number1+5 {
                                 if node1 == self.ThirtysixLabel{
-                                    node1 = self.children[self.number1]
+                                    node1 = self.children[self.number1+5]
                                     node1Index = i
                                 }else{
-                                    node2 = self.children[self.number1]
+                                    node2 = self.children[self.number1+5]
                                     node2Index = i
                                 }
-                            }else if i == self.number2{
+                            }else if i == self.number2+5{
                                 if node1 == self.ThirtysixLabel{
-                                    node1 = self.children[self.number2]
+                                    node1 = self.children[self.number2+5]
                                     node1Index = i
                                 }else{
-                                    node2 = self.children[self.number2]
+                                    node2 = self.children[self.number2+5]
                                     node2Index = i
                                 }
                             }else{
                                 self.children[i].run(SKAction.fadeOut(withDuration: 0.25))
                             }
                         }
-                        self.numberHidden! -= 1
-                        let originalLabelPosArray = self.getLabelPosArray()
-                    
-                        var node1PosIndex = 0
-                        var node2PosIndex = 0
-                        
-                        for var i in 0..<originalLabelPosArray.count{
-                            if node1.position == originalLabelPosArray.object(at: i) as! CGPoint{
-                                node1PosIndex = i
-                            }else if node2.position == originalLabelPosArray.object(at: i) as! CGPoint{
-                                node2PosIndex = i
+                        var oldPathPoint = self.calculatePoint(radius: self.numberRadius, point: self.beginNumberPos, numberPos: self.beginNumberPos)
+                        let oldNode2Pos = node2.position
+                        node2.run(SKAction.move(to: CGPoint(x: 0, y: 0), duration: 1))
+                        var counter = 0
+                        let lineUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { lineUpdateTimer in
+                            path = UIBezierPath()
+                            oldPathPoint.x -= oldNode2Pos.x/100
+                            oldPathPoint.y += oldNode2Pos.y/100
+                            path.move(to: self.calculatePoint(radius: self.operationRadius, point: self.operationPos.object(at: 1) as! CGPoint, numberPos: node2.position))
+                            path.addLine(to: oldPathPoint)
+                            self.line2.path = path.cgPath
+                            if counter == 70{
+                                self.line2.removeAllAnimations()
+                                self.line2.removeFromSuperlayer()
+                                lineUpdateTimer.invalidate()
+                            }else{
+                                counter += 1
                             }
-                        }
-                        self.numberHidden! += 1
-                        
-                        self.line1.strokeColor = SKColor.clear.cgColor
-                        self.line2.strokeColor = SKColor.clear.cgColor
-                        self.delay(0.25){
-                            self.line1.removeAllAnimations()
-                            self.line2.removeAllAnimations()
-                            node1.run(SKAction.move(to: self.labelPos.object(at: 0) as! CGPoint, duration: 0.5))
-                            node2.run(SKAction.move(to: self.labelPos.object(at: 3) as! CGPoint, duration: 0.5))
-                            var operationNode = SKSpriteNode()
-                            
-                            switch self.operationInt {
-                            case 1:
-                                operationNode = self.addSprite
-                            case 2:
-                                operationNode = self.subtractSprite
-                            case 3:
-                                operationNode = self.multiplySprite
-                            case 4:
-                                operationNode = self.divideSprite
-                            default:
-                                break
-                            }
-                            let operationNodeNewPos = CGPoint(x: self.frame.size.width/2, y:self.frame.size.height/4)
-                            operationNode.run(SKAction.move(to: operationNodeNewPos, duration: 0.5))
-                            self.delay(0.75){
-                                node1.run(SKAction.moveTo(x: 0, duration: 0.5))
-                                node2.run(SKAction.moveTo(x: 0, duration: 0.5))
-                                node1.run(SKAction.fadeOut(withDuration: 0.4))
-                                node2.run(SKAction.fadeOut(withDuration: 0.4))
-                                
-                                let node1Label = node1.children[1] as! SKLabelNode
-                                let node2Label = node2.children[1] as! SKLabelNode
-                                
-                                let int1 = Int(node1Label.text!)!
-                                let int2 = Int(node2Label.text!)!
-                                
-                                let operatedNumber = self.gameLogic.operateNumbers(num1: int1, num2: int2, operation: self.operationInt)
-                                
-
-                                
-                                operationNode.run(SKAction.fadeOut(withDuration: 0.5))
-                                self.delay(0.5){
-                                    operationNode.position = self.operationPos.object(at: 1) as! CGPoint
-                                    operationNode.run(SKAction.fadeIn(withDuration: 0.2))
-                                    var labelPosArray = self.getLabelPosArray()
-                                    if operatedNumber == -1{
-                                        self.addChild(self.errorOverlay)
-                                        let overlay = self.errorOverlay.children[0]
-                                        let message = self.errorOverlay.children[3]
-                                        overlay.run(SKAction.fadeIn(withDuration: 0.2))
-                                        message.run(SKAction.fadeIn(withDuration: 0.2))
-                                        self.numberHidden! -= 1
-                                        labelPosArray = self.getLabelPosArray()
-                                        self.delay(0.2){
-                                            node1.run(SKAction.move(to: labelPosArray.object(at: node1PosIndex) as! CGPoint, duration: 0.01))
-                                            node2.run(SKAction.move(to: labelPosArray.object(at: node2PosIndex) as! CGPoint, duration: 0.01))
-                                            labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
-                                            labelPosArray.remove(labelPosArray.object(at: node2PosIndex-1))
-                                            node2.alpha = 1
-                                            node1.alpha = 1
-                                        }
-                                    }else{
-                                        node1.run(SKAction.move(to: labelPosArray.object(at: node1PosIndex) as! CGPoint, duration: 0.01))
-                                        labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
-                                        
-                                        let nodeCircle = node1.children[0] as! SKShapeNode
-                                        node1Label.fontColor = self.viewBackgroundColor
-                                        nodeCircle.fillColor = self.labelColor
-                                        node1.run(SKAction.fadeIn(withDuration: 0.2))
-                                        node1Label.text = "\(operatedNumber)"
-                                        self.hiddenArray.add(node2Index)
-                                        self.lastOperated.add(node1Index)
-                                        switch node2Index {
-                                        case 1:
-                                            self.operation1 = self.operationInt
-                                        case 2:
-                                            self.operation2 = self.operationInt
-                                        case 3:
-                                            self.operation3 = self.operationInt
-                                        case 4:
-                                            self.operation4 = self.operationInt
-                                        default:
-                                            break
-                                        }
-                                    }
-                                    self.delay(0.4){
-                                        if operatedNumber == -1{
-                                            self.delay(1){
-                                                let overlay = self.errorOverlay.children[0]
-                                                let message = self.errorOverlay.children[3]
-                                                overlay.run(SKAction.fadeOut(withDuration: 0.25))
-                                                message.run(SKAction.fadeOut(withDuration: 0.25))
-                                                self.delay(0.25){
-                                                    self.errorOverlay.removeFromParent()
-                                                }
-                                            }
-                                        }
-                                        var revealCounter = 0
-                                        revealHiddenNumbers: for var i in 1..<5{
-                                            if self.numberHidden == 2 && operatedNumber != -1{
-                                                break revealHiddenNumbers
-                                            }else if revealCounter == labelPosArray.count{
-                                                break revealHiddenNumbers
-                                            }
-                                            if i != self.number1 && i != self.number2 && !self.hiddenArray.contains(self.children[i]){
-                                                self.children[i].position = labelPosArray.object(at: revealCounter) as! CGPoint
-                                                self.children[i].run(SKAction.fadeIn(withDuration: 0.3))
-                                                revealCounter += 1
-                                            }
-                                        }
-                                        self.drawingLine = false
-                                        self.moveOperationBool = false
-                                        self.numberHidden! += 1
-                                        self.line1.removeFromSuperlayer()
-                                        self.line2.removeFromSuperlayer()
-                                        self.delay(0.3){
-                                            self.inOperatingAnimation = false
-                                        }
-                                        if self.numberHidden == 3 && node1Label.text == "36"{
-                                            self.delay(0.5){
-                                                self.endGame()
-                                            }
-                                        }else if self.numberHidden == 3 && node1Label.text != "36"{
-                                            self.delay(0.5){
-                                                self.addChild(self.errorOverlay)
-                                                let overlay = self.errorOverlay.children[0]
-                                                let message = self.errorOverlay.children[2]
-                                                overlay.run(SKAction.fadeIn(withDuration: 0.2))
-                                                message.run(SKAction.fadeIn(withDuration: 0.2))
-                                                self.delay(0.2){
-                                                    self.reset()
-                                                    self.delay(1){
-                                                        overlay.run(SKAction.fadeOut(withDuration: 0.25))
-                                                        message.run(SKAction.fadeOut(withDuration: 0.25))
-                                                        self.delay(0.25){
-                                                            self.errorOverlay.removeFromParent()
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        })
                     }
                 }
-                
-                
             default:
                 break
             }
