@@ -458,7 +458,7 @@ class GameScene: SKScene {
                                 self.insertChild(node2, at: self.number2+7)
                                 self.hiddenArray.add(self.number2)
                                 self.lastOperated.add(self.number1)
-                                self.delay(0.1){
+                                self.delay(0.3){
                                     let labelPosArray = self.getLabelPosArray()
                                     var moveCounter = 0
                                     moveNodes: for var i in 8..<12{
@@ -467,6 +467,30 @@ class GameScene: SKScene {
                                             moveCounter += 1
                                             if moveCounter == labelPosArray.count{
                                                 self.numberHidden! += 1
+                                                let node1Label = node1.children[1] as! SKLabelNode
+                                                    if self.numberHidden == 3 && node1Label.text == "36"{
+                                                        self.delay(0.5){
+                                                            self.endGame()
+                                                        }
+                                                    }else if self.numberHidden == 3 && node1Label.text != "36"{
+                                                        self.delay(0.5){
+                                                            self.addChild(self.errorOverlay)
+                                                            let overlay = self.errorOverlay.children[0]
+                                                            let message = self.errorOverlay.children[2]
+                                                            overlay.run(SKAction.fadeIn(withDuration: 0.2))
+                                                            message.run(SKAction.fadeIn(withDuration: 0.2))
+                                                            self.delay(0.2){
+                                                                self.reset()
+                                                                self.delay(1){
+                                                                    overlay.run(SKAction.fadeOut(withDuration: 0.25))
+                                                                    message.run(SKAction.fadeOut(withDuration: 0.25))
+                                                                    self.delay(0.25){
+                                                                        self.errorOverlay.removeFromParent()
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 break moveNodes
                                             }
                                         }
