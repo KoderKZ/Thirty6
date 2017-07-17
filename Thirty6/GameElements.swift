@@ -479,7 +479,7 @@ extension GameScene {
         var hiddenNode = SKNode()
         var number = 0
         var operation = 0
-        var lastOperatedNodeIndex = self.children.index(of: lastOperatedNode)!
+        var lastOperatedNodeIndex = self.children.index(of: lastOperatedNode)!-7
         var hiddenIndex = lastOperated.index(of: lastOperatedNodeIndex as Any)
         for var i in 0..<2{
             if lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any) == 1 ||
