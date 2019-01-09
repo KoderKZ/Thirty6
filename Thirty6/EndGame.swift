@@ -1,7 +1,7 @@
 //
 //  EndGame.swift
 //  Thirty6
-//
+
 //  Created by Kevin Zhou on 6/22/17.
 //  Copyright © 2017 Kevin Zhou. All rights reserved.
 //
