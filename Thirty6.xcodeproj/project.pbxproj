@@ -31,6 +31,7 @@
 		0AD6949E1E8DE4ED001FEE38 /* GameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6949D1E8DE4ED001FEE38 /* GameElements.swift */; };
 		0AD694A01E8DE540001FEE38 /* TitleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6949F1E8DE540001FEE38 /* TitleScene.swift */; };
 		0AD9F9F11EFF018C0023ACA9 /* timeburnernormal.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0AD9F9F01EFF018C0023ACA9 /* timeburnernormal.ttf */; };
+		0AFBBA001F36544B00E78C0C /* SKMultilineLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AFBB9FF1F36544B00E78C0C /* SKMultilineLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		0AD6949D1E8DE4ED001FEE38 /* GameElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameElements.swift; sourceTree = "<group>"; };
 		0AD6949F1E8DE540001FEE38 /* TitleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScene.swift; sourceTree = "<group>"; };
 		0AD9F9F01EFF018C0023ACA9 /* timeburnernormal.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = timeburnernormal.ttf; sourceTree = "<group>"; };
+		0AFBB9FF1F36544B00E78C0C /* SKMultilineLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKMultilineLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +138,7 @@
 				0AD6946B1E8DE46A001FEE38 /* Actions.sks */,
 				0AD6946F1E8DE46A001FEE38 /* GameViewController.swift */,
 				0AD6949F1E8DE540001FEE38 /* TitleScene.swift */,
+				0AFBB9FF1F36544B00E78C0C /* SKMultilineLabel.swift */,
 				0AD6946D1E8DE46A001FEE38 /* GameScene.swift */,
 				0AD6949D1E8DE4ED001FEE38 /* GameElements.swift */,
 				0A292D711EF8974900CFCB44 /* GameLogic.swift */,
@@ -327,6 +330,7 @@
 			files = (
 				0A292D721EF8974900CFCB44 /* GameLogic.swift in Sources */,
 				0AD6949E1E8DE4ED001FEE38 /* GameElements.swift in Sources */,
+				0AFBBA001F36544B00E78C0C /* SKMultilineLabel.swift in Sources */,
 				0A01B4231EFCB77F001E175C /* EndGame.swift in Sources */,
 				0AD6946E1E8DE46A001FEE38 /* GameScene.swift in Sources */,
 				0AD694701E8DE46A001FEE38 /* GameViewController.swift in Sources */,
@@ -485,10 +489,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = L8XDXNFNKF;
 				INFOPLIST_FILE = Thirty6/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = us.happybunny.Thirty6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -498,10 +504,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = L8XDXNFNKF;
 				INFOPLIST_FILE = Thirty6/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = us.happybunny.Thirty6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

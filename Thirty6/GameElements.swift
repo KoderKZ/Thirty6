@@ -11,6 +11,25 @@ import SpriteKit
 import SceneKit
 
 
+extension SKLabelNode {
+    func multilined() -> SKLabelNode {
+        let substrings: [String] = self.text!.components(separatedBy: "\n")
+        return substrings.enumerated().reduce(SKLabelNode()) {
+            let label = SKLabelNode(fontNamed: self.fontName)
+            label.text = $1.element
+            label.fontColor = self.fontColor
+            label.fontSize = self.fontSize
+            label.position = self.position
+            label.horizontalAlignmentMode = self.horizontalAlignmentMode
+            label.verticalAlignmentMode = self.verticalAlignmentMode
+            let y = CGFloat($1.offset - substrings.count / 2) * self.fontSize
+            label.position = CGPoint(x: 0, y: -y)
+            $0.addChild(label)
+            return $0
+        }
+    }
+}
+
 extension GameScene {
 
     func delay(_ delay:Double, closure:@escaping ()->()) {
@@ -31,6 +50,56 @@ extension GameScene {
         labelPos2.add(CGPoint(x: -self.frame.size.width/4, y: -self.frame.size.height/4))
         labelPos2.add(CGPoint(x: 0, y: -self.frame.size.height/4))
         labelPos2.add(CGPoint(x: self.frame.size.width/4, y: -self.frame.size.height/4))
+    }
+    
+    func setUpTuturialView() {
+        helpNode = SKNode()
+        
+        let helpQuestionMark = SKLabelNode(text: "?")
+        helpQuestionMark.fontColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
+        helpQuestionMark.fontSize = 20
+        helpQuestionMark.horizontalAlignmentMode = .center
+        helpQuestionMark.verticalAlignmentMode = .center
+        helpQuestionMark.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        helpQuestionMark.fontName = "TimeBurner"
+        
+        let helpCircle = SKShapeNode(circleOfRadius: helpQuestionMark.frame.size.height*4/5)
+        helpCircle.fillColor = self.backgroundColor
+        helpCircle.lineWidth = 2
+        helpCircle.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        helpCircle.strokeColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
+        
+        helpNode.addChild(helpCircle)
+        helpNode.addChild(helpQuestionMark)
+        
+        helpNode.position = CGPoint(x: self.frame.size.width/2-helpCircle.frame.size.width, y: backButton.position.y-self.frame.size.height/2)
+        
+        tutorialPage = SKNode()
+        
+        tutorialPage.position = CGPoint(x: 0, y: -self.frame.size.height-10)
+        
+        let backgroundLayer = SKShapeNode(rectOf: size)
+        backgroundLayer.fillColor = .black
+        backgroundLayer.alpha = 0.8
+        backgroundLayer.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        tutorialPage.addChild(backgroundLayer)
+        
+        let tutorialText = SKLabelNode(fontNamed: "TimeBurner")
+        tutorialText.fontSize = self.frame.size.width/27
+        tutorialText.verticalAlignmentMode = .top
+        tutorialText.horizontalAlignmentMode = .left
+        tutorialText.fontColor = SKColor(red: 176/255, green: 196/255, blue: 222/255, alpha: 1.0)
+        tutorialText.text = "The goal of the game is to use the four basic \n\noperations to get to the final number: 36! \n\n\nTo switch operations, \n\nswipe left or right near the operations.\n\n\nTo operate on the numbers,\n\n select the operation you want. \n\n\nThen, tap the first number you want to select, \n\nthen tap the next number. \n\nOrder does matter, so if you want to subtract 4 from 2, \n\nyou must select 4 first, then tap 2 to get the number 2.\n\nTo undo a mistake, \n\ntap and hold onto a number that has been operated on. \n\nThese numbers are highlighted by a light color. \n\nThat's all! Good luck!"
+        let label = tutorialText.multilined()
+        label.zPosition = 1001
+        label.position = CGPoint(x: self.frame.size.width/20, y: self.frame.size.height*9/14)
+        tutorialPage.addChild(label)
+        
+        addChild(tutorialPage)
+        
+        movedAmount = 0
+        
+        addChild(helpNode)
     }
     
     func reset() {
@@ -54,28 +123,20 @@ extension GameScene {
         
         operation1 = 0
         operation2 = 0
-        operation3 = 0
-        operation4 = 0
         operationInt = 1
-        
-        for var i in 8..<12{
-            self.children[i].position = labelPos.object(at: i-1) as! CGPoint
-            self.children[i].alpha = 1
-        }
         
         let width1 = firstNumberLabel.frame.size.height*0.5
         let width2 = firstNumberLabel.frame.size.height
         
-        addSprite.position = operationPos.object(at: 1) as! CGPoint
         addSprite.size = CGSize(width: width2, height: width2)
         
-        subtractSprite.position = operationPos.object(at: 2) as! CGPoint
         subtractSprite.size = CGSize(width: width1, height: width1/100*15)
         
         multiplySprite.alpha = 0
         
-        divideSprite.position = operationPos.object(at: 0) as! CGPoint
         divideSprite.size = CGSize(width: width1, height: width1)
+        
+        animateBeginning()
         
         
     }
@@ -118,6 +179,8 @@ extension GameScene {
         errorOverlay.addChild(undoMessage)
         errorOverlay.addChild(endMessage)
         errorOverlay.addChild(operationMessage)
+        
+        addChild(errorOverlay)
     }
     
     func calculatePoint(radius:CGFloat, point:CGPoint, numberPos: CGPoint) -> CGPoint{
@@ -170,8 +233,8 @@ extension GameScene {
         
         let numCircle = SKShapeNode()
         numCircle.path = circlePath.cgPath
-        numCircle.fillColor = self.backgroundColor
-        numCircle.lineWidth = 3
+        numCircle.fillColor = self.viewBackgroundColor
+        numCircle.lineWidth = 1
         numCircle.strokeColor = labelColor
         numCircle.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         
@@ -181,28 +244,83 @@ extension GameScene {
         return numLabelNode
     }
     
+    func animateBeginning(){
+        firstNumberNode.alpha = 0
+        firstNumberNode.position = CGPoint(x:0,y:0)
+        
+        secondNumberNode.alpha = 0
+        secondNumberNode.position = CGPoint(x:0,y:0)
+        
+        thirdNumberNode.alpha = 0
+        thirdNumberNode.position = CGPoint(x:0,y:0)
+        
+        fourthNumberNode.alpha = 0
+        fourthNumberNode.position = CGPoint(x:0,y:0)
+        
+        ThirtysixLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height-ThirtysixLabel.frame.size.height/2)
+
+        addSprite.alpha = 0
+        subtractSprite.alpha = 0
+        multiplySprite.alpha = 0
+        divideSprite.alpha = 0
+
+        let circle = self.children[1]
+        
+        circle.position = ThirtysixLabel.position
+        
+        
+        ThirtysixLabel.run(SKAction.move(to: CGPoint(x:self.frame.size.width/2, y: self.frame.size.height/4*3), duration: 0.2))
+        delay(0.75){
+            self.addSprite.position = self.ThirtysixLabel.position
+            self.subtractSprite.position = self.ThirtysixLabel.position
+            self.divideSprite.position = self.ThirtysixLabel.position
+            self.addSprite.run(SKAction.fadeIn(withDuration: 0.1))
+            self.subtractSprite.run(SKAction.fadeIn(withDuration: 0.1))
+            self.divideSprite.run(SKAction.fadeIn(withDuration: 0.1))
+            circle.run(SKAction.fadeIn(withDuration: 0.1))
+            self.addSprite.run(SKAction.move(to: self.operationPos[1] as! CGPoint, duration: 0.25))
+            self.subtractSprite.run(SKAction.move(to: self.operationPos[2] as! CGPoint, duration: 0.25))
+            self.divideSprite.run(SKAction.move(to: self.operationPos[0] as! CGPoint, duration: 0.25))
+            circle.run(SKAction.move(to: CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2), duration: 0.25))
+            self.delay(0.7){
+                self.firstNumberNode.run(SKAction.fadeIn(withDuration: 0.1))
+                self.secondNumberNode.run(SKAction.fadeIn(withDuration: 0.1))
+                self.thirdNumberNode.run(SKAction.fadeIn(withDuration: 0.1))
+                self.fourthNumberNode.run(SKAction.fadeIn(withDuration: 0.1))
+                self.firstNumberNode.run(SKAction.move(to: self.labelPos[0] as! CGPoint, duration: 0.25))
+                self.secondNumberNode.run(SKAction.move(to: self.labelPos[1] as! CGPoint, duration: 0.25))
+                self.thirdNumberNode.run(SKAction.move(to: self.labelPos[2] as! CGPoint, duration: 0.25))
+                self.fourthNumberNode.run(SKAction.move(to: self.labelPos[3] as! CGPoint, duration: 0.25))
+            }
+        }
+        
+    }
     
     func setUpLabels(){
         ThirtysixLabel = SKLabelNode(text: "36")
         ThirtysixLabel.fontSize = 75
         ThirtysixLabel.fontName = "TimeBurner-Bold"
         ThirtysixLabel.fontColor = labelColor
-        ThirtysixLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/4*3)
+        ThirtysixLabel.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height-ThirtysixLabel.frame.size.height/2)
         ThirtysixLabel.horizontalAlignmentMode = .center
         ThirtysixLabel.verticalAlignmentMode = .center
         addChild(ThirtysixLabel)
         
         firstNumberNode = createNumLabel(num: 0)
-        firstNumberNode.position = labelPos.object(at: 0) as! CGPoint
+        firstNumberNode.alpha = 0
+        firstNumberNode.position = CGPoint(x:0,y:0)
         
         secondNumberNode = createNumLabel(num: 1)
-        secondNumberNode.position = labelPos.object(at: 1) as! CGPoint
+        secondNumberNode.alpha = 0
+        secondNumberNode.position = CGPoint(x:0,y:0)
         
         thirdNumberNode = createNumLabel(num: 2)
-        thirdNumberNode.position = labelPos.object(at: 2) as! CGPoint
+        thirdNumberNode.alpha = 0
+        thirdNumberNode.position = CGPoint(x:0,y:0)
         
         fourthNumberNode = createNumLabel(num: 3)
-        fourthNumberNode.position = labelPos.object(at: 3) as! CGPoint
+        fourthNumberNode.alpha = 0
+        fourthNumberNode.position = CGPoint(x:0,y:0)
         
         firstNumberLabel = firstNumberNode.children[1] as! SKLabelNode
         secondNumberLabel = secondNumberNode.children[1] as! SKLabelNode
@@ -213,14 +331,15 @@ extension GameScene {
         let width2 = firstNumberLabel.frame.size.height
         
         addSprite = SKSpriteNode(imageNamed: "add.png")
-        addSprite.position = operationPos.object(at: 1) as! CGPoint
+        addSprite.alpha = 0
         addSprite.color = labelColor
         addSprite.colorBlendFactor = 1
         addSprite.size = CGSize(width: width2, height: width2)
         
         subtractSprite = SKSpriteNode(imageNamed: "subtract.png")
-        subtractSprite.position = operationPos.object(at: 2) as! CGPoint
+        subtractSprite.alpha = 0
         subtractSprite.color = labelColor
+        subtractSprite.alpha = 0.5
         subtractSprite.colorBlendFactor = 1
         subtractSprite.size = CGSize(width: width1, height: width1/100*15)
         
@@ -231,25 +350,27 @@ extension GameScene {
         multiplySprite.alpha = 0
         
         divideSprite = SKSpriteNode(imageNamed: "divide.png")
-        divideSprite.position = operationPos.object(at: 0) as! CGPoint
+        divideSprite.alpha = 0
         divideSprite.color = labelColor
+        divideSprite.alpha = 0.5
         divideSprite.colorBlendFactor = 1
         divideSprite.size = CGSize(width: width1, height: width1)
         
+        operationRadius = addSprite.frame.size.width/10*9
+        
+        let circle = SKShapeNode(circleOfRadius: operationRadius)
+        circle.fillColor = self.viewBackgroundColor
+        circle.lineWidth = 2
+        circle.alpha = 0
+        circle.strokeColor = labelColor
+        circle.position = ThirtysixLabel.position
+        
+        addChild(circle)
         addChild(addSprite)
         addChild(subtractSprite)
         addChild(divideSprite)
         addChild(multiplySprite)
         
-        
-        operationRadius = addSprite.frame.size.width/5*4
-        
-        let circle = SKShapeNode(circleOfRadius: operationRadius)
-        circle.fillColor = .clear
-        circle.lineWidth = 7
-        circle.strokeColor = labelColor
-        circle.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        addChild(circle)
         
         line1 = SKShapeNode()
         line2 = SKShapeNode()
@@ -270,6 +391,9 @@ extension GameScene {
         backButton.colorBlendFactor = 1
         backButton.position = CGPoint(x: backButton.size.width*3, y: self.frame.size.height-(backButton.size.height*2.5))
         addChild(backButton)
+        
+        animateBeginning()
+        
 
     }
     
@@ -480,38 +604,38 @@ extension GameScene {
         var number = 0
         var operation = 0
         var lastOperatedNodeIndex = self.children.index(of: lastOperatedNode)!-7
+        var duplicateLastOperated = false
         var hiddenIndex = lastOperated.index(of: lastOperatedNodeIndex as Any)
-        for var i in 0..<2{
-            if lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any) == 1 ||
-                lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any) == 2 ||
-                lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any) == 3 ||
-                lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any) == 4 {
-                    
-                hiddenIndex = self.lastOperated.indexOfObjectIdentical(to: lastOperatedNodeIndex as Any)
-            }
+        lastOperated.removeObject(at: hiddenIndex)
+        if lastOperated.contains(lastOperatedNodeIndex){
+            duplicateLastOperated = true
+            hiddenIndex = 1
         }
+        
         switch hiddenArray.object(at: hiddenIndex) as! Int{
         case 1:
             hiddenNode = firstNumberNode
             number = Int(firstNumberLabel.text!)!
-            operation = operation1
-            operation1 = 0
         case 2:
             hiddenNode = secondNumberNode
             number = Int(secondNumberLabel.text!)!
-            operation = operation2
-            operation2 = 0
         case 3:
             hiddenNode = thirdNumberNode
             number = Int(thirdNumberLabel.text!)!
-            operation = operation3
-            operation3 = 0
         case 4:
             hiddenNode = fourthNumberNode
             number = Int(fourthNumberLabel.text!)!
-            operation = operation4
-            operation4 = 0
         default: break
+        }
+        
+        switch numberHidden {
+        case 1:
+            operation = operation1
+            operation1 = 0
+        case 2:
+            operation = operation2
+            operation2 = 0
+        default:break
         }
         
         var hiddenNodeIndex = self.children.index(of: hiddenNode)
@@ -560,9 +684,7 @@ extension GameScene {
             hiddenNode.run(SKAction.fadeIn(withDuration: 0.05))
             hiddenNode.run(SKAction.move(to: labelPosArray.object(at: node1PosIndex+1) as! CGPoint, duration: 0.1))
             self.hiddenArray.remove(self.hiddenArray.object(at: hiddenIndex))
-            self.lastOperated.remove(self.lastOperated.object(at: hiddenIndex))
-            
-            if !self.lastOperated.contains(lastOperatedNodeIndex){
+            if !duplicateLastOperated{
                 let nodeCircle = lastOperatedNode.children[0] as! SKShapeNode
                 
                 lastOperatedLabel.fontColor = self.labelColor
@@ -574,7 +696,7 @@ extension GameScene {
             labelPosArray.remove(labelPosArray.object(at: node1PosIndex))
             var moveCounter = 0
             moveNodes: for var i in 8..<12{
-                if self.children[i] != lastOperatedNode && self.children[i] != hiddenNode && !self.hiddenArray.contains(self.children[i]){
+                if self.children[i] != lastOperatedNode && self.children[i] != hiddenNode && !self.hiddenArray.contains(i-7){
                     self.children[i].run(SKAction.move(to: labelPosArray.object(at: moveCounter) as! CGPoint, duration: 0.1))
                     moveCounter += 1
                     if moveCounter == labelPosArray.count{
